@@ -1,0 +1,25 @@
+{
+  "name": "rumsan",
+  "private": true,
+  "devDependencies": {
+    "lerna": "^5.1.4",
+    "nx": "^14.3.6"
+  },
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  },
+  "scripts": {
+    "build": "yarn lerna run build",
+    "dev": "yarn lerna run dev",
+    "test": "yarn lerna run test",
+    "test:watch": "yarn lerna run test:watch",
+    "commit": "yarn git-cz"
+  }
+}

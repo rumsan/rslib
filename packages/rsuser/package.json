@@ -1,0 +1,13 @@
+{
+  "name": "rsuser",
+  "version": "1.0.0",
+  "description": "rs user using postgres as database",
+  "main": "index.js",
+  "author": "Rumsan",
+  "license": "MIT",
+  "dependencies": {
+    "pg": "^8.7.3",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.21.0"
+  }
+}
