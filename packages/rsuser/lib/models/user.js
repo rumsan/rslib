@@ -64,6 +64,10 @@ module.exports = function ({ db, schema = {}, tableName = "users" }) {
     wallet_address: {
       type: Sequelize.TEXT,
     },
+    isActive: {
+      type: Sequelize.BOOLEAN,
+      default: true,
+    },
     ...schema,
   };
 

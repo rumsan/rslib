@@ -1,80 +1,50 @@
-const { Model } = require("sequelize");
-const Sequelize = require("sequelize");
-// const sequelize = new Sequelize("sqlite::memory:");
+const { User: userSchema } = require("../models");
+const { ERR, NameParser } = require("../utils");
 
-module.exports = function ({ db, modelConfig }) {
-  schema = modelConfig?.User?.schema || {};
+let UserModel;
+class User {
+  constructor({ db }) {
+    UserModel = userSchema({ db });
+  }
 
-  // the very basic user schema
-  const UserSchemaBase = {
-    name: {
-      first: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      last: {
-        type: Sequelize.STRING,
-      },
-      salutation: {
-        type: Sequelize.STRING,
-      },
-      suffix: {
-        type: Sequelize.STRING,
-      },
-      get() {
-        if (this.name.initials)
-          return (
-            this.name.first + " " + this.name.initials + " " + this.name.last
-          );
-        else return this.name.first + " " + this.name.last;
-      },
-    },
-    email: {
-      type: Sequelize.STRING,
-      get() {
-        try {
-          if (this.email.length == 0) return null;
-          let email = this.email;
-          if (email) return email.address;
+  add(payload) {
+    return UserModel.create(payload);
+  }
 
-          email = this.email.find((e) => {
-            return e.type === "email";
-          });
-          if (email) return email.address;
-        } catch (e) {
-          return null;
-        }
-      },
-    },
-    phone: {
-      type: Sequelize.STRING,
-      get() {
-        return this.phone.trim();
-      },
-    },
-  };
+  list() {
+    return UserModel.findAll({
+      order: [["name", "ASC"]],
+    });
+  }
 
-  //   const userSchemaVirtuals = {};
+  remove(id) {
+    return UserModel.destroy({ where: { id } });
+  }
 
-  const userSchemaMain = {
-    ...UserSchemaBase,
-    ...schema,
-    // userSchemaVirtuals,
-  };
+  updateName(userId, name, first, last, salutation, suffix, mid) {
+    if (!userId) throw ERR.USERID_REQ;
+    if (!name) throw ERR.NAME_REQ;
+    if (name && typeof name == "string") {
+      name = NameParser.parse(name);
 
-  const UserSchema = db.define("user", userSchemaMain, {
-    timestamps: true,
-  });
-  //   (async () => {
-  //     await sequelize.sync({ force: true });
-  //     // Code here
-  //   })();
+      return UserModel.update(
+        {
+          first: name.first,
+          last: name.last,
+          salutation: name.salutation,
+          suffix: name.sufffx,
+          mid: name.mid,
+        },
+        { where: { id: userId } }
+      );
+    }
+    if (first || last || salutation || suffix || mid) {
+    }
+  }
 
-  return UserSchema;
-};
+  getById(userId) {
+    return UserModel.findByPk(userId);
+  }
+}
 
-// class User extends Model{
-
-// }
-
-// User.init({})
+module.exports = User;
