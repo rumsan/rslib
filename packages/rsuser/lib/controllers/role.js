@@ -1,5 +1,5 @@
 var crypto = require("crypto");
-const { ERR } = require("./error");
+const { ERR } = require("../utils");
 const { Op } = require("sequelize");
 const roleSchema = require("./models/role");
 var RoleModel;

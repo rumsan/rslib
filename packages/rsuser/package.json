@@ -5,9 +5,15 @@
   "main": "index.js",
   "author": "Rumsan",
   "license": "MIT",
+  "scripts": {
+    "test": "cross-env NODE_ENV=development jest --runInBand --detectOpenHandles ./tests"
+  },
   "dependencies": {
     "pg": "^8.7.3",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.21.0"
+  },
+  "devDependencies": {
+    "jest": "^28.1.1"
   }
 }

@@ -1,49 +1,39 @@
 const Sequelize = require("sequelize");
 
-module.exports = function ({ db, schema = {}, tableName = "auth" }) {
+module.exports = function ({ db, schema = {}, User }) {
   schema = {
     userId: {
-      // type:
+      type: Sequelize.INTEGER,
+      allowNull: false,
     },
     type: {
-      type: Sequelize.STRING,
+      type: Sequelize.TEXT,
     },
     username: {
-      type: Sequelize.STRING,
+      type: Sequelize.TEXT,
     },
     is_verified: {
       type: Sequelize.BOOLEAN,
-      required: true,
-      default: false,
+      allowNull: false,
+      defaultValue: false,
     },
     false_attempts: {
-      type: Sequelize.NUMBER,
-      default: 0,
+      type: Sequelize.INTEGER,
+      defaultValue: 0,
     },
     is_locked: {
       type: Sequelize.BOOLEAN,
-      default: false,
+      defaultValue: false,
     },
     locked_on: {
       type: Sequelize.DATE,
     },
-    is_active: {
-      type: Sequelize.BOOLEAN,
-      default: true,
-    },
-    // created_by: {
-    //   type: ObjectId,
-    //   ref: modelConfig.User.name,
-    // },
-    // updated_by: {
-    //   type: ObjectId,
-    //   ref: modelConfig.User.name,
-    // },
     ...schema,
   };
 
-  return db.define(tableName, schema, {
+  const AuthModel = db.define("auth", schema, {
     timestamps: true,
+    freezeTableName: true,
     index: [
       {
         unique: true,
@@ -51,4 +41,13 @@ module.exports = function ({ db, schema = {}, tableName = "auth" }) {
       },
     ],
   });
+
+  AuthModel.associate = function (models) {
+    AuthModel.belongsTo(User, {
+      foreignKey: "userId",
+      targetKey: "id",
+    });
+  };
+
+  return AuthModel;
 };

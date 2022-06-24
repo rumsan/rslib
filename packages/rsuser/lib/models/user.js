@@ -1,7 +1,7 @@
 const Sequelize = require("sequelize");
 const { NameParser, RSError, ERR } = require("../utils");
 
-module.exports = function ({ db, schema = {}, tableName = "users" }) {
+module.exports = function ({ db, schema = {} }) {
   schema = {
     first: {
       type: Sequelize.TEXT,
@@ -71,9 +71,15 @@ module.exports = function ({ db, schema = {}, tableName = "users" }) {
     ...schema,
   };
 
-  return db.define(tableName, schema, {
+  const UserModel = db.define("user", schema, {
+    freezeTableName: true,
     timestamps: true,
   });
+
+  // UserModel.associate = function (models) {
+  //   UserModel.hasMany(models.Auth);
+  // };
+  return UserModel;
 };
 
 const sanitizeGender = (gender) => {
