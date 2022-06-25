@@ -1,0 +1,9 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "reusable generic backend data ",
+  "main": "index.js",
+  "author": "Rumsan",
+  "license": "MIT",
+  "dependencies": {}
+}

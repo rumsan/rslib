@@ -1,0 +1,9 @@
+{
+  "name": "react",
+  "version": "1.0.0",
+  "description": "reusable react components",
+  "main": "index.js",
+  "author": "Rumsan",
+  "license": "MIT",
+  "dependencies": {}
+}

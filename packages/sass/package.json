@@ -1,0 +1,9 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "reusable sass and css files",
+  "main": "index.js",
+  "author": "Rumsan",
+  "license": "MIT",
+  "dependencies": {}
+}
