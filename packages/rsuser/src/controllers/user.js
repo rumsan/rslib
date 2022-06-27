@@ -2,8 +2,8 @@ const Model = require("../models");
 const { ERR, NameParser } = require("../utils");
 
 class User {
-  constructor({ db }) {
-    let { UserModel } = Model({ db });
+  constructor({ db, schema }) {
+    let { UserModel } = Model({ db, schema });
     this.UserModel = UserModel;
   }
 

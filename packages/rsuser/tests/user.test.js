@@ -26,4 +26,14 @@ describe("User Model Test", () => {
     let updatedUser = await userC.updateName(savedUser?.id, "Santosh Shrestha");
     expect(updatedUser.last).toBe("Shrestha");
   });
+
+  it("Get user by id", async () => {
+    let user = await userC.getById(savedUser?.id);
+    expect(user.last).toBe("Shrestha");
+  });
+
+  it("Remove user", async () => {
+    let removedUser = await userC.remove(savedUser?.id);
+    expect(removedUser).toBe(1);
+  });
 });

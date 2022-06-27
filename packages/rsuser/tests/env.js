@@ -1,6 +1,6 @@
 const env = {
   username: "postgres",
-  password: "T$mp9670",
+  password: "postgres",
   database: "rsuser",
   host: "localhost",
   dialect: "postgres",

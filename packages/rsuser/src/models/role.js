@@ -7,14 +7,14 @@ module.exports = function ({ db, schema = {}, tableName = "roles" }) {
       allowNull: false,
     },
     permissions: {
-      type: Sequelize.ARRAY(Sequelize.TEXT),
+      type: Sequelize.ARRAY(Sequelize.STRING),
     },
     expiry_date: {
       type: Sequelize.DATE,
     },
     is_system: {
       type: Sequelize.BOOLEAN,
-      default: false,
+      defaultValue: false,
     },
     ...schema,
   };

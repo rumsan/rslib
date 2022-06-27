@@ -1,8 +1,6 @@
-var crypto = require("crypto");
-const { ERR } = require("../utils");
 const { Op } = require("sequelize");
-const roleSchema = require("./models/role");
-var RoleModel;
+const Model = require("../models");
+const sequelize = require("sequelize");
 
 function arrayContainsArray(superset, subset) {
   if (0 === subset.length || superset.length < subset.length) {
@@ -15,15 +13,16 @@ function arrayContainsArray(superset, subset) {
 }
 
 class Role {
-  constructor({ db }) {
-    RoleModel = roleSchema({ db });
+  constructor({ db, schema }) {
+    let { RoleModel } = Model({ db, schema: schema?.user });
+    this.RoleModel = RoleModel;
   }
   get(id) {
-    return RoleModel.findByPk(id);
+    return this.RoleModel.findByPk(id);
   }
 
   async add(payload) {
-    let role = await RoleModel.findOne({ where: { name: payload.name } });
+    let role = await this.RoleModel.findOne({ where: { name: payload.name } });
 
     if (role) {
       if (role.is_system) return role;
@@ -32,28 +31,27 @@ class Role {
         permissions: payload.permissions,
       });
     } else {
-      role = await RoleModel.create(payload);
-      return role;
+      return this.RoleModel.create(payload);
     }
   }
 
   list() {
-    return RoleModel.findAll({
+    return this.RoleModel.findAll({
       order: [["name", "ASC"]],
     });
   }
 
   remove(id) {
-    return RoleModel.destroy({ where: { id, is_system: false } });
+    return this.RoleModel.destroy({ where: { id, is_system: false } });
   }
 
   async listPermissions(name) {
-    let role = await RoleModel.findOne({ where: { name } });
+    let role = await this.RoleModel.findOne({ where: { name } });
     return role.permissions;
   }
 
   async getValidRoles() {
-    let roles = await RoleModel.findAll({
+    let roles = await this.RoleModel.findAll({
       where: {
         [Op.or]: [
           {
@@ -83,7 +81,7 @@ class Role {
     let roles = name;
     if (typeof name == "string") roles = name.split(",");
 
-    let validRoles = await RoleModel.findAll({
+    let validRoles = await this.RoleModel.findAll({
       where: {
         //todo: "name" and figure out what the function does
         [Op.or]: [
@@ -99,7 +97,7 @@ class Role {
       },
     });
 
-    // let validRoles = await RoleModel.find({
+    // let validRoles = await this.RoleModel.find({
     //   name: { $in: roles },
     //   $or: [{ expiry_date: null }, { expiry_date: { $gt: new Date() } }],
     // });
@@ -111,30 +109,40 @@ class Role {
     return perms;
   }
 
-  addPermission({ id, permissions }) {
+  // async getPermissions(name) {
+  //   let role = await this.RoleModel.findOne({ where: { name } });
+  //   return role.permissions;
+  // },
+
+  async getRoleByName(name) {
+    return this.RoleModel.findOne({ where: { name } });
+  }
+
+  async addPermission({ name, permissions }) {
     permissions = permissions || [];
     if (typeof permissions == "string") permissions = permissions.split(",");
 
-    return RoleModel.update(
+    await this.RoleModel.update(
       {
         permissions: sequelize.fn(
-          "array_append",
+          "array_cat",
           sequelize.col("permissions"),
           permissions
         ),
       },
-      { where: { id } }
+      { where: { name } }
     );
+    return this.getRoleByName(name);
   }
 
   async hasPermission({ name, permission }) {
-    let role = await RoleModel.findOne({ where: { name } });
+    let role = await this.RoleModel.findOne({ where: { name } });
     if (!role) return false;
     return role.permissions.indexOf(permission) > -1;
   }
 
-  removePermission({ id, permissions }) {
-    return RoleModel.update(
+  async removePermission({ id, permissions }) {
+    await this.RoleModel.update(
       {
         permissions: sequelize.fn(
           "array_remove",
@@ -144,6 +152,8 @@ class Role {
       },
       { where: { id, is_system: false } }
     );
+
+    return this.get(id);
   }
 }
 
