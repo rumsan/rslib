@@ -1,5 +1,5 @@
 const db = require("./db");
-const { Role } = require("../lib/controllers");
+const { Role } = require("../src/controllers");
 
 const role = new Role({ db, schema: {} });
 

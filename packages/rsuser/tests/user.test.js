@@ -1,4 +1,4 @@
-const { User } = require("../lib/controllers");
+const { User } = require("../src/controllers");
 const db = require("./db");
 
 const userC = new User({ db, schema: {} });
