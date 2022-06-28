@@ -5,7 +5,6 @@ module.exports = function ({ db, schema = {} }) {
   schema = {
     first: {
       type: Sequelize.TEXT,
-      allowNull: false,
     },
     mid: {
       type: Sequelize.TEXT,
@@ -71,7 +70,7 @@ module.exports = function ({ db, schema = {} }) {
     ...schema,
   };
 
-  const UserModel = db.define("user", schema, {
+  const UserModel = db.define("users", schema, {
     freezeTableName: true,
     timestamps: true,
   });
