@@ -1,6 +1,6 @@
 const Sequelize = require("sequelize");
 
-module.exports = function ({ db, schema = {}, tableName = "roles" }) {
+module.exports = function ({ db, schema = {}, tableName = "tblRoles" }) {
   schema = {
     name: {
       type: Sequelize.TEXT,

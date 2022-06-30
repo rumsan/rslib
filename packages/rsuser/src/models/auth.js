@@ -1,6 +1,6 @@
 const Sequelize = require("sequelize");
 
-module.exports = function ({ db, schema = {}, User }) {
+module.exports = function ({ db, schema = {} }) {
   schema = {
     userId: {
       type: Sequelize.INTEGER,
@@ -31,7 +31,7 @@ module.exports = function ({ db, schema = {}, User }) {
     ...schema,
   };
 
-  const AuthModel = db.define("auth", schema, {
+  const AuthModel = db.define("tblAuths", schema, {
     timestamps: true,
     freezeTableName: true,
     index: [
@@ -42,14 +42,14 @@ module.exports = function ({ db, schema = {}, User }) {
     ],
   });
 
-  AuthModel.associate = function (models) {
-    AuthModel.belongsTo(db.models.user, {
-      foreignKey: {
-        name: "userId",
-        allowNull: false,
-      },
-    });
-  };
+  // AuthModel.associate = function (models) {
+  //   AuthModel.belongsTo(db.models.user, {
+  //     foreignKey: {
+  //       name: "userId",
+  //       allowNull: false,
+  //     },
+  //   });
+  // };
 
   return AuthModel;
 };

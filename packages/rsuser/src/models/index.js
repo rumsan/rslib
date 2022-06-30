@@ -1,23 +1,20 @@
-module.exports = ({ db, schema = {}, sequelize, ...props }) => {
+module.exports = ({ db, schema = {}, config = {} }) => {
   return {
     UserModel: require("./user")({
       db,
       schema: schema.user,
-      sequelize,
-      ...props,
+      config,
     }),
     RoleModel: require("./role")({
       db,
       schema: schema.role,
-      sequelize,
-      ...props,
+      config,
     }),
     //PAT: require("./pat")({ db, schema: schema.pat, User }),
     AuthModel: require("./auth")({
       db,
       schema: schema.auth,
-      sequelize,
-      ...props,
+      config,
     }),
   };
 };

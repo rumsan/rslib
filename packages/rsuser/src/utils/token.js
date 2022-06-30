@@ -4,21 +4,22 @@ const Common = require("./common");
 let JWT;
 
 class Token {
-  constructor({ appSecret }) {
+  constructor({ appSecret, jwtDuration = 3600000 }) {
     JWT = Common.loadModule("jsonwebtoken");
     if (!appSecret) throw ERR.APP_SECRET;
     if (appSecret.length != 32) throw ERR.APP_SECRET32;
     this.secret = appSecret;
+    this.jwtDuration = jwtDuration;
   }
 
-  generate(data, jwt_duration) {
+  generate(data) {
     return JWT.sign(
       {
         data: Secure.encrypt(JSON.stringify(data), this.secret),
       },
       this.secret,
       {
-        expiresIn: jwt_duration,
+        expiresIn: this.jwtDuration,
       }
     );
   }
