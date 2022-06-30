@@ -19,17 +19,17 @@ describe("User Model Test", () => {
 
   it("create & save user successfully", async () => {
     savedUser = await userC.add(userData);
-    expect(savedUser.first).toBe("Test");
+    expect(savedUser.name.first).toBe("Test");
   });
 
   it("Update user full name", async () => {
     let updatedUser = await userC.updateName(savedUser?.id, "Santosh Shrestha");
-    expect(updatedUser.last).toBe("Shrestha");
+    expect(updatedUser.name.last).toBe("Shrestha");
   });
 
   it("Get user by id", async () => {
     let user = await userC.getById(savedUser?.id);
-    expect(user.last).toBe("Shrestha");
+    expect(user.name.last).toBe("Shrestha");
   });
 
   it("Remove user", async () => {

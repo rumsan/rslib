@@ -43,9 +43,11 @@ module.exports = function ({ db, schema = {}, User }) {
   });
 
   AuthModel.associate = function (models) {
-    AuthModel.belongsTo(User, {
-      foreignKey: "userId",
-      targetKey: "id",
+    AuthModel.belongsTo(db.models.user, {
+      foreignKey: {
+        name: "userId",
+        allowNull: false,
+      },
     });
   };
 

@@ -1,58 +1,68 @@
-const Sequelize = require("sequelize");
+const { DataTypes } = require("sequelize");
 const { NameParser, RSError, ERR } = require("../utils");
 
 module.exports = function ({ db, schema = {} }) {
   schema = {
-    first: {
-      type: Sequelize.TEXT,
-    },
-    mid: {
-      type: Sequelize.TEXT,
-    },
-    last: {
-      type: Sequelize.TEXT,
-    },
-    salutation: {
-      type: Sequelize.TEXT,
-    },
-    suffix: {
-      type: Sequelize.TEXT,
-    },
+    // first: {
+    //   type: DataTypes.TEXT,
+    // },
+    // mid: {
+    //   type: DataTypes.TEXT,
+    // },
+    // last: {
+    //   type: DataTypes.TEXT,
+    // },
+    // salutation: {
+    //   type: DataTypes.TEXT,
+    // },
+    // suffix: {
+    //   type: DataTypes.TEXT,
+    // },
+
     email: {
-      type: Sequelize.TEXT,
+      type: DataTypes.TEXT,
       validate: {
         is: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
       },
     },
+
     name: {
-      type: Sequelize.VIRTUAL,
+      //   type: DataTypes.VIRTUAL,
+      //   get() {
+      //     // let initials = this.initials ? " " + this.initials : "";
+      //     return this.first + this.last;
+      //   },
+      //   set(v) {
+      //     let { first, initials, last, suffix, salutation } = NameParser.parse(v);
+      //     this.first = first;
+      //     // this.mid = initials;
+      //     this.last = last;
+      //     // this.suffix = suffix;
+      //     // this.salutation = salutation;
+      //   },
+      type: DataTypes.JSON,
       get() {
-        let initials = this.initials ? " " + this.initials : "";
-        return this.first + initials + " " + this.last;
+        return JSON.parse(this.getDataValue("name"));
       },
       set(v) {
-        let { first, initials, last, suffix, salutation } = NameParser.parse(v);
-        this.first = first;
-        this.mid = initials;
-        this.last = last;
-        this.suffix = suffix;
-        this.salutation = salutation;
+        let parsed = NameParser.parse(v);
+        return this.setDataValue("name", JSON.stringify(parsed));
       },
     },
     phone: {
-      type: Sequelize.TEXT,
+      type: DataTypes.TEXT,
       set(v) {
         this.setDataValue("phone", v.trim());
       },
     },
     gender: {
-      type: Sequelize.CHAR(1),
+      type: DataTypes.CHAR(1),
       set(v) {
         this.setDataValue("gender", sanitizeGender(v));
       },
     },
     password: {
-      type: Sequelize.JSON,
+      type: DataTypes.JSON,
       validate: {
         customValidator(v) {
           if (!(v.hasOwnProperty("salt") && v.hasOwnProperty("hash")))
@@ -60,24 +70,29 @@ module.exports = function ({ db, schema = {} }) {
         },
       },
     },
-    wallet_address: {
-      type: Sequelize.TEXT,
+    walletAddress: {
+      type: DataTypes.STRING,
     },
     isActive: {
-      type: Sequelize.BOOLEAN,
+      type: DataTypes.BOOLEAN,
       default: true,
     },
     ...schema,
   };
-
-  const UserModel = db.define("users", schema, {
+  const UserModel = db.define("user", schema, {
     freezeTableName: true,
     timestamps: true,
   });
 
-  // UserModel.associate = function (models) {
-  //   UserModel.hasMany(models.Auth);
-  // };
+  UserModel.associate = function (models) {
+    UserModel.hasMany(db.models.auth, {
+      foreignKey: {
+        name: "userId",
+        allowNull: false,
+      },
+      as: "auths",
+    });
+  };
   return UserModel;
 };
 

@@ -1,5 +1,9 @@
+const env = require("../env/env");
+const { appSecret } = require("../env/env");
 const Model = require("../models");
-const { ERR, NameParser } = require("../utils");
+const { ERR, Token } = require("../utils");
+
+const token = new Token({ appSecret });
 
 class User {
   constructor({ db, schema }) {
@@ -32,6 +36,18 @@ class User {
 
   getById(userId) {
     return this.UserModel.findByPk(userId);
+  }
+  generateToken(user) {
+    const data = {
+      userId: user.id,
+      name: user.name,
+      walletAddress: user.walletAddress,
+    };
+    const generatedToken = token.generate(data, env.expiryTime);
+    return generatedToken;
+  }
+  validateToken(tokenValue) {
+    return token.validate(tokenValue);
   }
 }
 
