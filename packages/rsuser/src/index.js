@@ -1,8 +1,17 @@
 const Models = require("./models");
-const RoleController = require("./controllers/role");
-const UserController = require("./controllers/user");
-const AuthController = require("./controllers/auth");
+const {
+  RoleController,
+  UserController,
+  AuthController,
+} = require("./controllers");
 const { ERR, Token } = require("./utils");
+
+/**
+ * config options
+ * - appSecret
+ * - jwtDuration
+ * - autoApprove
+ */
 
 class init {
   constructor({ db, schema, notify = null, config }) {
@@ -11,12 +20,21 @@ class init {
     this.RoleModel = RoleModel;
     this.AuthModel = AuthModel;
     this.Role = new RoleController({ db, RoleModel });
-    this.User = new UserController({ db, UserModel });
-    this.Auth = new AuthController({ db, AuthModel });
+    this.User = new UserController({ db, UserModel, config });
+    this.Auth = new AuthController({ db, AuthModel, UserModel });
     this.tokenHandler = new Token({
       appSecret: config.appSecret,
       jwtDuration: config.jwtDuration,
     });
+  }
+
+  addUser(userPayload) {
+    return this.User.add(userPayload);
+  }
+
+  //Get user by either id or uuid
+  getUserById(userId) {
+    return this.User.getById(userId);
   }
 
   generateToken(user) {

@@ -1,21 +1,38 @@
 const Sequelize = require("sequelize");
+const { ERR } = require("../utils");
 
+//Types of login unpw, google, facebook, email, phone, wallet
 module.exports = function ({ db, schema = {} }) {
   schema = {
     userId: {
       type: Sequelize.INTEGER,
       allowNull: false,
     },
-    type: {
-      type: Sequelize.TEXT,
-    },
-    username: {
-      type: Sequelize.TEXT,
-    },
-    is_verified: {
-      type: Sequelize.BOOLEAN,
+    service: {
+      type: Sequelize.ENUM(["email", "phone", "wallet", "google", "facebook"]),
       allowNull: false,
-      defaultValue: false,
+    },
+    serviceId: {
+      type: Sequelize.STRING,
+      allowNull: false,
+    },
+    password: {
+      type: Sequelize.JSON,
+      validate: {
+        customValidator(v) {
+          if (!(v.hasOwnProperty("salt") && v.hasOwnProperty("hash")))
+            throw ERR.PASSWORD_FORMAT;
+        },
+      },
+    },
+    details: {
+      type: Sequelize.JSON,
+      get() {
+        return JSON.parse(this.getDataValue("details"));
+      },
+      set(v) {
+        return this.setDataValue("details", JSON.stringify(v));
+      },
     },
     false_attempts: {
       type: Sequelize.INTEGER,
