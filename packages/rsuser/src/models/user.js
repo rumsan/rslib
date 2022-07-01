@@ -24,14 +24,15 @@ module.exports = function ({ db, schema = {} }) {
     suffix: {
       type: DataTypes.TEXT,
     },
-
     email: {
       type: DataTypes.TEXT,
       validate: {
         is: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
       },
     },
-
+    roles: {
+      type: DataTypes.ARRAY(DataTypes.STRING),
+    },
     name: {
       type: DataTypes.VIRTUAL,
       get() {
@@ -67,21 +68,12 @@ module.exports = function ({ db, schema = {} }) {
         this.setDataValue("gender", sanitizeGender(v));
       },
     },
-    password: {
-      type: DataTypes.JSON,
-      validate: {
-        customValidator(v) {
-          if (!(v.hasOwnProperty("salt") && v.hasOwnProperty("hash")))
-            throw ERR.PASSWORD_FORMAT;
-        },
-      },
-    },
     walletAddress: {
       type: DataTypes.STRING,
     },
-    isActive: {
+    isApproved: {
       type: DataTypes.BOOLEAN,
-      default: true,
+      defaultValue: false,
     },
     ...schema,
   };

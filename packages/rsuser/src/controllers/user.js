@@ -1,14 +1,22 @@
-const { ERR } = require("../utils");
+const {
+  ERR,
+  Common: { isUUID },
+} = require("../utils");
 
 class User {
-  constructor({ UserModel }) {
+  constructor({ UserModel, config = {} }) {
     //let { UserModel } = Model({ db, schema });
 
     this.UserModel = UserModel;
   }
 
   add(payload) {
+    if (config.autoApprove) payload.isApproved = true;
     return this.UserModel.create(payload);
+  }
+
+  approve(id) {
+    return this.UserModel.update({ isApproved: true }, { where: { id } });
   }
 
   list() {
@@ -30,7 +38,9 @@ class User {
   }
 
   getById(userId) {
-    return this.UserModel.findByPk(userId);
+    if (isUUID(userId))
+      return this.UserModel.findOne({ where: { uuid: userId } });
+    else return this.UserModel.findByPk(userId);
   }
 }
 
