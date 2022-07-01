@@ -7,6 +7,7 @@ const { ERR, Token } = require("./utils");
 class init {
   constructor({ db, schema, notify = null, config }) {
     const { UserModel, RoleModel, AuthModel } = Models({ db, schema, config });
+
     this.UserModel = UserModel;
     this.RoleModel = RoleModel;
     this.AuthModel = AuthModel;
