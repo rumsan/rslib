@@ -3,14 +3,13 @@ const { NameParser, RSError, ERR } = require("../utils");
 
 module.exports = function ({ db, schema = {} }) {
   schema = {
-    uuid: {
-      type: DataTypes.UUID,
-      allowNull: false,
-      defaultValue: DataTypes.UUIDV4,
-    },
+    // uuid: {
+    //   type: DataTypes.UUID,
+    //   allowNull: false,
+    //   defaultValue: DataTypes.UUIDV4,
+    // },
     first: {
       type: DataTypes.TEXT,
-      allowNull: false,
     },
     mid: {
       type: DataTypes.TEXT,
