@@ -6,12 +6,12 @@ const {
 class User {
   constructor({ UserModel, config = {} }) {
     //let { UserModel } = Model({ db, schema });
-
+    this.config = config;
     this.UserModel = UserModel;
   }
 
   add(payload) {
-    if (config.autoApprove) payload.isApproved = true;
+    if (this.config.autoApprove) payload.isApproved = true;
     return this.UserModel.create(payload);
   }
 

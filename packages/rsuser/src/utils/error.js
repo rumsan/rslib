@@ -69,6 +69,11 @@ const ERR = {
     400
   ),
   USERNAME_REQ: new RSError("Username is required.", "username_req", 400),
+  WALLET_REGISTER_FAILED: new RSError(
+    "Wallet registration failed",
+    "wallet_register_failed",
+    400
+  ),
 
   // APP_SECRET: new RSError('', '', 400),
 };

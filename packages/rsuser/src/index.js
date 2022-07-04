@@ -4,13 +4,14 @@ const {
   UserController,
   AuthController,
 } = require("./controllers");
-const { ERR, Token } = require("./utils");
-
+const { ERR, Token, WalletUtils } = require("./utils");
 /**
  * config options
  * - appSecret
  * - jwtDuration
  * - autoApprove
+ * - appSignatureValidity
+ * - w3PrivateKey
  */
 
 class init {
@@ -22,11 +23,17 @@ class init {
     this.AuthModel = AuthModel;
     this.Role = new RoleController({ db, RoleModel });
     this.User = new UserController({ db, UserModel, config });
-    this.Auth = new AuthController({ db, AuthModel, UserModel });
+    this.Auth = new AuthController({
+      db,
+      AuthModel,
+      UserModel,
+      WalletUtils: this.walletUtils,
+    });
     this.tokenHandler = new Token({
       appSecret: config.appSecret,
       jwtDuration: config.jwtDuration,
     });
+    this.walletUtils = new WalletUtils({ config });
   }
 
   addUser(userPayload) {
@@ -50,6 +57,26 @@ class init {
 
   validateToken(tokenValue) {
     return this.tokenHandler.validate(tokenValue);
+  }
+
+  async walletRegister({ authSignature, ...payload }) {
+    let walletAddress = await this.WalletUtils.getAddressFromSignature(
+      authSignature
+    );
+    if (!walletAddress) throw ERR.WALLET_REGISTER_FAILED;
+
+    let user = await this.UserModel.findOne({ walletAddress });
+    if (user) throw ERR.USERNAME_EXISTS;
+    else {
+      user = await this.UserModel.create({ walletAddress, ...payload });
+      const token = await this.generateToken(user);
+      return { user, token };
+    }
+
+    try {
+    } catch (error) {
+      ERR.DEFAULT;
+    }
   }
 }
 

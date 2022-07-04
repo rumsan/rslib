@@ -4,9 +4,10 @@ const {
 } = require("../utils");
 
 class Auth {
-  constructor({ AuthModel, UserModel }) {
+  constructor({ AuthModel, UserModel, WalletUtils }) {
     this.UserModel = UserModel;
     this.AuthModel = AuthModel;
+    this.WalletUtils = WalletUtils;
   }
 
   async add(userId, service, serviceId, details = {}) {
