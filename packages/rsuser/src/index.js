@@ -50,7 +50,7 @@ class init {
       userId: user.id,
       uuid: user.uuid,
       name: user.name,
-      walletAddress: user.walletAddress,
+      wallet_address: user.wallet_address,
     };
     return this.tokenHandler.generate(data);
   }
@@ -60,20 +60,19 @@ class init {
   }
 
   async walletRegister({ authSignature, ...payload }) {
-    let walletAddress = await this.WalletUtils.getAddressFromSignature(
+    let wallet_address = await this.WalletUtils.getAddressFromSignature(
       authSignature
     );
-    if (!walletAddress) throw ERR.WALLET_REGISTER_FAILED;
-
-    let user = await this.UserModel.findOne({ walletAddress });
-    if (user) throw ERR.USERNAME_EXISTS;
-    else {
-      user = await this.UserModel.create({ walletAddress, ...payload });
-      const token = await this.generateToken(user);
-      return { user, token };
-    }
+    if (!wallet_address) throw ERR.WALLET_REGISTER_FAILED;
 
     try {
+      let user = await this.UserModel.findOne({ wallet_address });
+      if (user) throw ERR.USERNAME_EXISTS;
+      else {
+        user = await this.UserModel.create({ walletAddress, ...payload });
+        const token = await this.generateToken(user);
+        return { user, token };
+      }
     } catch (error) {
       ERR.DEFAULT;
     }
