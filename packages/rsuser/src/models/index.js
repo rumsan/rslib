@@ -1,20 +1,34 @@
 module.exports = ({ db, schema = {}, config = {} }) => {
-  return {
+  /**
+   * Define table associations
+   */
+
+  let models = {
     UserModel: require("./user")({
       db,
+      tblName: "tblUsers",
       schema: schema.user,
       config,
     }),
     RoleModel: require("./role")({
       db,
+      tblName: "tblRoles",
       schema: schema.role,
       config,
     }),
-    //PAT: require("./pat")({ db, schema: schema.pat, User }),
     AuthModel: require("./auth")({
       db,
+      tblName: "tblAuths",
       schema: schema.auth,
       config,
     }),
   };
+
+  const { tblUsers, tblAuths, tblRoles } = db.models;
+
+  tblUsers.hasMany(tblAuths, {
+    foreignKey: "userId",
+  });
+
+  return models;
 };

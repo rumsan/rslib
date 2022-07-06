@@ -2,7 +2,7 @@ const Sequelize = require("sequelize");
 const { ERR } = require("../utils");
 
 //Types of login unpw, google, facebook, email, phone, wallet
-module.exports = function ({ db, schema = {} }) {
+module.exports = function ({ db, tblName, schema = {} }) {
   schema = {
     userId: {
       type: Sequelize.INTEGER,
@@ -48,7 +48,7 @@ module.exports = function ({ db, schema = {} }) {
     ...schema,
   };
 
-  const AuthModel = db.define("tblAuths", schema, {
+  const AuthModel = db.define(tblName, schema, {
     timestamps: true,
     freezeTableName: true,
     index: [
@@ -58,15 +58,5 @@ module.exports = function ({ db, schema = {} }) {
       },
     ],
   });
-
-  // AuthModel.associate = function (models) {
-  //   AuthModel.belongsTo(db.models.user, {
-  //     foreignKey: {
-  //       name: "userId",
-  //       allowNull: false,
-  //     },
-  //   });
-  // };
-
   return AuthModel;
 };

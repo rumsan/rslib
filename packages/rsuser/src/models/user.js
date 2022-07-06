@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
 const { NameParser, RSError, ERR } = require("../utils");
 
-module.exports = function ({ db, schema = {} }) {
+module.exports = function ({ db, tblName, schema = {} }) {
   schema = {
     // uuid: {
     //   type: DataTypes.UUID,
@@ -76,21 +76,11 @@ module.exports = function ({ db, schema = {} }) {
     },
     ...schema,
   };
-  const UserModel = db.define("tblUsers", schema, {
+  const UserModel = db.define(tblName, schema, {
     freezeTableName: true,
     paranoid: true,
     timestamps: true,
   });
-
-  // UserModel.associate = function (models) {
-  //   UserModel.hasMany(db.models.auth, {
-  //     foreignKey: {
-  //       name: "userId",
-  //       allowNull: false,
-  //     },
-  //     as: "auths",
-  //   });
-  // };
   return UserModel;
 };
 
