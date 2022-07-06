@@ -17,8 +17,10 @@ module.exports = (columns = {}) => {
             email VARCHAR(255),
             phone VARCHAR(255),
             gender CHAR(1),
-            walletAddress VARCHAR(255),
-            isApproved BOOLEAN,
+            wallet_address VARCHAR(255),
+            is_approved BOOLEAN,
+            created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
             ${columns.users}
             PRIMARY KEY (id),
             name VARCHAR(255)
@@ -26,14 +28,16 @@ module.exports = (columns = {}) => {
 
         CREATE TABLE IF NOT EXISTS "tblAuths"(
             id int NOT NULL,
-            userId INTEGER NOT NULL,
+            user_id INTEGER NOT NULL,
             service VARCHAR(255),
-            serviceId VARCHAR(255),
+            service_id VARCHAR(255),
             password JSON,
             details JSON,
+            created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
             ${columns.auths}
             PRIMARY KEY (id),
-            FOREIGN KEY (userId) REFERENCES "tblUsers"(id)
+            FOREIGN KEY (user_id) REFERENCES "tblUsers"(id)
         );
 
         CREATE TABLE IF NOT EXISTS "tblRoles"(
@@ -42,6 +46,8 @@ module.exports = (columns = {}) => {
             permissions  VARCHAR(255),
             expiry_date TIMESTAMP,
             is_system BOOLEAN,
+            created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
             ${columns.roles}
             PRIMARY KEY (id)
         );`;

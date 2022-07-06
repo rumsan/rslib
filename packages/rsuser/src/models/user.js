@@ -33,27 +33,27 @@ module.exports = function ({ db, tblName, schema = {} }) {
       type: DataTypes.ARRAY(DataTypes.STRING),
     },
     name: {
-      type: DataTypes.VIRTUAL,
-      get() {
-        let initials = this.initials ? " " + this.initials : "";
-        return this.first + initials + " " + this.last;
-      },
-      set(v) {
-        let { first, initials, last, suffix, salutation } = NameParser.parse(v);
-        this.first = first;
-        this.mid = initials;
-        this.last = last;
-        this.suffix = suffix;
-        this.salutation = salutation;
-      },
-      // type: DataTypes.JSON,
+      // type: DataTypes.VIRTUAL,
       // get() {
-      //   return JSON.parse(this.getDataValue("name"));
+      //   let initials = this.initials ? " " + this.initials : "";
+      //   return this.first + initials + " " + this.last;
       // },
       // set(v) {
-      //   let parsed = NameParser.parse(v);
-      //   return this.setDataValue("name", JSON.stringify(parsed));
+      //   let { first, initials, last, suffix, salutation } = NameParser.parse(v);
+      //   this.first = first;
+      //   this.mid = initials;
+      //   this.last = last;
+      //   this.suffix = suffix;
+      //   this.salutation = salutation;
       // },
+      type: DataTypes.JSON,
+      get() {
+        return JSON.parse(this.getDataValue("name"));
+      },
+      set(v) {
+        let parsed = NameParser.parse(v);
+        return this.setDataValue("name", JSON.stringify(parsed));
+      },
     },
     phone: {
       type: DataTypes.TEXT,
@@ -67,10 +67,10 @@ module.exports = function ({ db, tblName, schema = {} }) {
         this.setDataValue("gender", sanitizeGender(v));
       },
     },
-    walletAddress: {
+    wallet_address: {
       type: DataTypes.STRING,
     },
-    isApproved: {
+    is_approved: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
@@ -79,7 +79,7 @@ module.exports = function ({ db, tblName, schema = {} }) {
   const UserModel = db.define(tblName, schema, {
     freezeTableName: true,
     paranoid: true,
-    timestamps: true,
+    // timestamps: true,
   });
   return UserModel;
 };
