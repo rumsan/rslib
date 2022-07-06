@@ -30,5 +30,9 @@ module.exports = ({ db, schema = {}, config = {} }) => {
     foreignKey: "userId",
   });
 
+  tblAuths.belongsTo(tblUsers, {
+    foreignKey: "userId",
+  });
+
   return models;
 };

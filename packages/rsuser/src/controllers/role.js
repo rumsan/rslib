@@ -1,5 +1,4 @@
 const { Op } = require("sequelize");
-const Model = require("../models");
 const sequelize = require("sequelize");
 
 function arrayContainsArray(superset, subset) {
@@ -13,9 +12,8 @@ function arrayContainsArray(superset, subset) {
 }
 
 class Role {
-  constructor({ db, schema }) {
-    let { RoleModel } = Model({ db, schema: schema?.user });
-    this.RoleModel = RoleModel;
+  constructor(db) {
+    this.RoleModel = db.models.tblRoles;
   }
   get(id) {
     return this.RoleModel.findByPk(id);

@@ -4,9 +4,9 @@ const {
 } = require("../utils");
 
 class Auth {
-  constructor({ AuthModel, UserModel, WalletUtils }) {
-    this.UserModel = UserModel;
-    this.AuthModel = AuthModel;
+  constructor(db, { WalletUtils }) {
+    this.UserModel = db.models.tblUsers;
+    this.AuthModel = db.models.tblAuths;
     this.WalletUtils = WalletUtils;
   }
 
@@ -14,7 +14,7 @@ class Auth {
     let auth = await this.AuthModel.findOne({
       where: { service, serviceId },
     });
-    if (!auth) return auth;
+    if (auth) return auth;
     return this.AuthModel.create({ userId, service, serviceId, details });
   }
 

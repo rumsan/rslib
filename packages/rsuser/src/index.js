@@ -15,18 +15,13 @@ const { ERR, Token, WalletUtils } = require("./utils");
  */
 
 class init {
-  constructor({ db, schema, notify = null, config }) {
-    const { UserModel, RoleModel, AuthModel } = Models({ db, schema, config });
+  constructor(db, { schema, notify = null, config }) {
+    Models({ db, schema, config });
 
-    this.UserModel = UserModel;
-    this.RoleModel = RoleModel;
-    this.AuthModel = AuthModel;
-    this.Role = new RoleController({ db, RoleModel });
-    this.User = new UserController({ db, UserModel, config });
-    this.Auth = new AuthController({
-      db,
-      AuthModel,
-      UserModel,
+    this.Role = new RoleController(db, { config });
+    this.User = new UserController(db, { config });
+    this.Auth = new AuthController(db, {
+      config,
       WalletUtils: this.walletUtils,
     });
     this.tokenHandler = new Token({
