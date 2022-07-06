@@ -16,21 +16,20 @@ module.exports = function ({ db, tblName, schema = {} }) {
       type: Sequelize.STRING,
       allowNull: false,
     },
-    password: {
-      type: Sequelize.JSON,
-      validate: {
-        customValidator(v) {
-          if (!(v.hasOwnProperty("salt") && v.hasOwnProperty("hash")))
-            throw ERR.PASSWORD_FORMAT;
-        },
-      },
-    },
     details: {
       type: Sequelize.JSON,
       get() {
         return JSON.parse(this.getDataValue("details"));
       },
       set(v) {
+        if (
+          v.password &&
+          !(
+            v.password.hasOwnProperty("salt") &&
+            v.password.hasOwnProperty("hash")
+          )
+        )
+          throw ERR.PASSWORD_FORMAT;
         return this.setDataValue("details", JSON.stringify(v));
       },
     },
