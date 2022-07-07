@@ -4,7 +4,7 @@ const {
   UserController,
   AuthController,
 } = require("./controllers");
-const { ERR, Token, WalletUtils } = require("./utils");
+const Utils = require("./utils");
 /**
  * config options
  * - appSecret
@@ -29,11 +29,12 @@ class init {
       UserModel,
       WalletUtils: this.walletUtils,
     });
-    this.tokenHandler = new Token({
+    this.utilities = Utils;
+    this.tokenHandler = new this.utilities.Token({
       appSecret: config.appSecret,
       jwtDuration: config.jwtDuration,
     });
-    this.walletUtils = new WalletUtils({ config });
+    this.walletUtils = new this.utilities.WalletUtils({ config });
   }
 
   addUser(userPayload) {
@@ -63,18 +64,18 @@ class init {
     let wallet_address = await this.WalletUtils.getAddressFromSignature(
       authSignature
     );
-    if (!wallet_address) throw ERR.WALLET_REGISTER_FAILED;
+    if (!wallet_address) throw this.utilities.ERR.WALLET_REGISTER_FAILED;
 
     try {
       let user = await this.UserModel.findOne({ wallet_address });
-      if (user) throw ERR.USERNAME_EXISTS;
+      if (user) throw this.utilities.ERR.USERNAME_EXISTS;
       else {
         user = await this.UserModel.create({ walletAddress, ...payload });
         const token = await this.generateToken(user);
         return { user, token };
       }
     } catch (error) {
-      ERR.DEFAULT;
+      this.utilities.ERR.DEFAULT;
     }
   }
 }
