@@ -1,6 +1,6 @@
 {
   "name": "rs-qrauth",
-  "version": "1.0.0",
+  "version": "2.0.1",
   "description": "Rumsan QR Code based login using wallet",
   "main": "src/index.js",
   "author": "Rumsan",
@@ -9,7 +9,6 @@
     "test": "cross-env NODE_ENV=development jest --runInBand --detectOpenHandles ./tests",
     "test:watch": "cross-env NODE_ENV=development jest --runInBand --detectOpenHandles --watch ./tests"
   },
-  "dependencies": {},
   "devDependencies": {
     "jest": "^28.1.1"
   }
