@@ -20,8 +20,13 @@ jobs:
       - name: change dir to user package
         run: |
           cd packages/user
-      
-      - name: publish to npm
-        uses: JS-DevTools/npm-publish@v1
-        with:
-          token: ${{ secrets.RSLIB_NPM_TOKEN }}
+
+      - name: view files
+        run: |
+          ls -al      
+      # - name: publish to npm
+      #   uses: JS-DevTools/npm-publish@v1
+      #   with:
+      #     token: ${{ secrets.RSLIB_NPM_TOKEN }}
+      #   package:
+          
