@@ -1,4 +1,4 @@
-name: build and push to dockerhub and deploy on aws
+name: publish to npm
 on:
   push:
     branches:
