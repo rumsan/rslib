@@ -1,5 +1,5 @@
 {
-  "name": "rs-qrauth",
+  "name": "@rumsan/rs-qrauth",
   "version": "2.0.1",
   "description": "Rumsan QR Code based login using wallet",
   "main": "src/index.js",

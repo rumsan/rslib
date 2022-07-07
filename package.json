@@ -1,6 +1,5 @@
 {
   "name": "rumsan",
-  "private": true,
   "devDependencies": {
     "lerna": "^5.1.4",
     "nx": "^14.3.6"

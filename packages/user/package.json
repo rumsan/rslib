@@ -1,5 +1,5 @@
 {
-  "name": "user",
+  "name": "@rumsan/user",
   "version": "2.0.1",
   "description": "rs user using postgres as database",
   "main": "src/index.js",
