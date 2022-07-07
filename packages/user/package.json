@@ -1,10 +1,11 @@
 {
   "name": "@rumsan/user",
   "version": "1.0.0",
-  "description": "rs user using postgres as database",
+  "description": "This manages users and access control for application",
   "main": "src/index.js",
   "author": "Rumsan",
   "license": "MIT",
+  "homepage": "https://github.com/rumsan/rslib.git",
   "scripts": {
     "test": "cross-env NODE_ENV=development jest --runInBand --detectOpenHandles ./tests",
     "test:watch": "cross-env NODE_ENV=development jest --runInBand --detectOpenHandles --watch ./tests"
