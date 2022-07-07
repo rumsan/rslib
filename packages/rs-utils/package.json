@@ -1,0 +1,16 @@
+{
+  "name": "rs-utils",
+  "version": "1.0.0",
+  "description": "Rumsan popular utilities",
+  "main": "src/index.js",
+  "author": "Rumsan",
+  "license": "MIT",
+  "scripts": {
+    "test": "cross-env NODE_ENV=development jest --runInBand --detectOpenHandles ./tests",
+    "test:watch": "cross-env NODE_ENV=development jest --runInBand --detectOpenHandles --watch ./tests"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "jest": "^28.1.1"
+  }
+}
