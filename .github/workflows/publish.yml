@@ -19,5 +19,7 @@ jobs:
           node-version: 16
         
       - name: publish to npm
-        run: |
-          npm-publish --token=${{ secrets.RSLIB_NPM_TOKEN }} --access="restricted" ./packages/user/package.json
+        uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.RSLIB_NPM_TOKEN }}
+          package: ./packages/user/package.json          
