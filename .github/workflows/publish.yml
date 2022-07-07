@@ -19,8 +19,9 @@ jobs:
 
       - name: publish to npm
         uses: JS-DevTools/npm-publish@v1
+        working-directory: ./packages/user
         with:
           token: ${{ secrets.RSLIB_NPM_TOKEN }}
-          package: ./packages/user/package.json
+          package: ./package.json
           access: restricted
           
