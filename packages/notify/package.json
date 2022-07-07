@@ -1,0 +1,19 @@
+{
+  "name": "notify",
+  "version": "1.0.0",
+  "description": "Rumsan notification manager",
+  "main": "src/index.js",
+  "author": "Rumsan",
+  "license": "MIT",
+  "scripts": {
+    "test": "cross-env NODE_ENV=development jest --runInBand --detectOpenHandles ./tests",
+    "test:watch": "cross-env NODE_ENV=development jest --runInBand --detectOpenHandles --watch ./tests"
+  },
+  "dependencies": {
+    "axios": "^0.27.2",
+    "nodemailer": "^6.7.6"
+  },
+  "devDependencies": {
+    "jest": "^28.1.1"
+  }
+}
