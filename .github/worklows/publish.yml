@@ -1,0 +1,27 @@
+name: build and push to dockerhub and deploy on aws
+on:
+  push:
+    branches:
+      - publish
+
+jobs:
+  build-push-image:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x]
+
+    steps:
+      - name: checkout publish branch
+        uses: actions/checkout@v3
+        with:
+          ref: publish
+
+      - name: change dir to user package
+        run: |
+          cd packages/user
+      
+      - name: publish to npm
+        uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.RSLIB_NPM_TOKEN }}
