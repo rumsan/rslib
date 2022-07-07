@@ -21,7 +21,7 @@ jobs:
         with:
           node-version: 16
 
-      - uses: log
+      - name: log
         run: |
           ls -al
       # - name: publish to npm
