@@ -4,9 +4,9 @@ const {
 } = require("../utils");
 
 class Auth {
-  constructor({ AuthModel, UserModel, WalletUtils }) {
-    this.UserModel = UserModel;
-    this.AuthModel = AuthModel;
+  constructor(db, { WalletUtils }) {
+    this.UserModel = db.models.tblUsers;
+    this.AuthModel = db.models.tblAuths;
     this.WalletUtils = WalletUtils;
   }
 
@@ -14,7 +14,7 @@ class Auth {
     let auth = await this.AuthModel.findOne({
       where: { service, serviceId },
     });
-    if (!auth) return auth;
+    if (auth) return auth;
     return this.AuthModel.create({ userId, service, serviceId, details });
   }
 
@@ -28,7 +28,7 @@ class Auth {
     const salt = saltHash.salt.toString("base64");
     const hash = saltHash.hash.toString("base64");
     return this.AuthModel.update(
-      { details: { salt, hash } },
+      { details: { password: { salt, hash } } },
       { where: { service: "email", serviceId: email } }
     );
   }
@@ -41,10 +41,10 @@ class Auth {
     if (!auth) throw ERR.USER_NOEXISTS;
     const hashedPwd = await hash(
       password,
-      Buffer.from(auth.details.salt, "base64")
+      Buffer.from(auth.details.password.salt, "base64")
     );
 
-    if (auth.details.hash !== hashedPwd.hash.toString("base64"))
+    if (auth.details.password.hash !== hashedPwd.hash.toString("base64"))
       throw ERR.LOGIN_INVALID;
 
     return this.UserModel.findByPk(auth.userId);

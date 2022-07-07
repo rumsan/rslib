@@ -4,10 +4,10 @@ const {
 } = require("../utils");
 
 class User {
-  constructor({ UserModel, config = {} }) {
+  constructor(db, { config = {} }) {
     //let { UserModel } = Model({ db, schema });
     this.config = config;
-    this.UserModel = UserModel;
+    this.UserModel = db.models.tblUsers;
   }
 
   add(payload) {

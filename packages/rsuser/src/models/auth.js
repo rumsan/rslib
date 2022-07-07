@@ -2,7 +2,7 @@ const Sequelize = require("sequelize");
 const { ERR } = require("../utils");
 
 //Types of login unpw, google, facebook, email, phone, wallet
-module.exports = function ({ db, schema = {} }) {
+module.exports = function ({ db, tblName, schema = {} }) {
   schema = {
     userId: {
       type: Sequelize.INTEGER,
@@ -16,21 +16,20 @@ module.exports = function ({ db, schema = {} }) {
       type: Sequelize.STRING,
       allowNull: false,
     },
-    password: {
-      type: Sequelize.JSON,
-      validate: {
-        customValidator(v) {
-          if (!(v.hasOwnProperty("salt") && v.hasOwnProperty("hash")))
-            throw ERR.PASSWORD_FORMAT;
-        },
-      },
-    },
     details: {
       type: Sequelize.JSON,
       get() {
         return JSON.parse(this.getDataValue("details"));
       },
       set(v) {
+        if (
+          v.password &&
+          !(
+            v.password.hasOwnProperty("salt") &&
+            v.password.hasOwnProperty("hash")
+          )
+        )
+          throw ERR.PASSWORD_FORMAT;
         return this.setDataValue("details", JSON.stringify(v));
       },
     },
@@ -48,7 +47,7 @@ module.exports = function ({ db, schema = {} }) {
     ...schema,
   };
 
-  const AuthModel = db.define("tblAuths", schema, {
+  const AuthModel = db.define(tblName, schema, {
     timestamps: true,
     freezeTableName: true,
     index: [
@@ -58,15 +57,5 @@ module.exports = function ({ db, schema = {} }) {
       },
     ],
   });
-
-  // AuthModel.associate = function (models) {
-  //   AuthModel.belongsTo(db.models.user, {
-  //     foreignKey: {
-  //       name: "userId",
-  //       allowNull: false,
-  //     },
-  //   });
-  // };
-
   return AuthModel;
 };
