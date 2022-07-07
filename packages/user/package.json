@@ -1,6 +1,6 @@
 {
   "name": "@rumsan/user",
-  "version": "2.0.2",
+  "version": "1.0.0",
   "description": "rs user using postgres as database",
   "main": "src/index.js",
   "author": "Rumsan",
