@@ -7,9 +7,6 @@ on:
 jobs:
   publish-user-npm:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./packages/user
 
     steps:
       - name: checkout publish branch
@@ -22,7 +19,5 @@ jobs:
           node-version: 16
         
       - name: publish to npm
-        uses: JS-DevTools/npm-publish@v1
-        with:
-          token: ${{ secrets.RSLIB_NPM_TOKEN }}
-          package: package.json          
+        run: |
+          npm-publish --token=${{ secrets.RSLIB_NPM_TOKEN }} --access="restricted" ./packages/user/package.json
