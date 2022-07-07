@@ -5,11 +5,11 @@ on:
       - publish
 
 jobs:
-  build-push-image:
+  publish-user-npm:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16.x]
+    defaults:
+      run:
+        working-directory: ./packages/user
 
     steps:
       - name: checkout publish branch
@@ -17,9 +17,12 @@ jobs:
         with:
           ref: publish
 
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
       - name: publish to npm
         uses: JS-DevTools/npm-publish@v1
-        working-directory: ./packages/user
         with:
           token: ${{ secrets.RSLIB_NPM_TOKEN }}
           package: ./package.json
