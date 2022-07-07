@@ -21,13 +21,9 @@ jobs:
         with:
           node-version: 16
 
-      - name: log
-        run: |
-          ls -al
-      # - name: publish to npm
-      #   uses: JS-DevTools/npm-publish@v1
-      #   with:
-      #     token: ${{ secrets.RSLIB_NPM_TOKEN }}
-      #     package: ./package.json
-      #     access: restricted
+      - name: publish to npm
+        uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.RSLIB_NPM_TOKEN }}
+          access: restricted
           
