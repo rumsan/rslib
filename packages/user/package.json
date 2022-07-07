@@ -1,11 +1,11 @@
 {
   "name": "@rumsan/user",
-  "version": "1.0.2",
+  "version": "1.0.201",
   "description": "This manages users and access control for application",
   "main": "src/index.js",
   "author": "Rumsan",
   "license": "MIT",
-  "homepage": "https://github.com/rumsan/rslib.git",
+  "homepage": "https://github.com/rumsan/rslib/tree/main/packages/user",
   "scripts": {
     "test": "cross-env NODE_ENV=development jest --runInBand --detectOpenHandles ./tests",
     "test:watch": "cross-env NODE_ENV=development jest --runInBand --detectOpenHandles --watch ./tests"
