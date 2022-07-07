@@ -2,25 +2,25 @@ name: publish @rumsan/user to npm
 on:
   push:
     branches:
-      - publish
+      - main
 
 jobs:
   publish-user-npm:
     runs-on: ubuntu-latest
 
     steps:
-      - name: checkout publish branch
+      - name: checkout main branch
         uses: actions/checkout@v3
         with:
-          ref: publish
+          ref: main
 
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-        
-      - name: publish to npm
+
+      - name: main to npm
         uses: JS-DevTools/npm-publish@v1
         with:
           token: ${{ secrets.RSLIB_NPM_TOKEN }}
-          package: ./packages/user/package.json   
-          access: public       
+          package: ./packages/user/package.json
+          access: public
