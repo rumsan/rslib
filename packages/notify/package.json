@@ -1,5 +1,5 @@
 {
-  "name": "rs-notify",
+  "name": "notify",
   "version": "1.0.0",
   "description": "Rumsan notification manager",
   "main": "src/index.js",

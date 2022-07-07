@@ -1,5 +1,5 @@
 {
-  "name": "rs-utils",
+  "name": "utils",
   "version": "1.0.0",
   "description": "Rumsan popular utilities",
   "main": "src/index.js",
