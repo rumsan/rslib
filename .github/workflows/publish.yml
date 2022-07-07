@@ -17,16 +17,11 @@ jobs:
         with:
           ref: publish
 
-      - name: change dir to user package
-        run: |
-          cd packages/user
-
-      - name: view files
-        run: |
-          ls -al      
-      # - name: publish to npm
-      #   uses: JS-DevTools/npm-publish@v1
-      #   with:
-      #     token: ${{ secrets.RSLIB_NPM_TOKEN }}
-      #   package:
+      - name: publish to npm
+        uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.RSLIB_NPM_TOKEN }}
+        package: ./packages/user/package.json
+        access: restricted
+        dry-run: true
           
