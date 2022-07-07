@@ -18,9 +18,16 @@ jobs:
         with:
           node-version: 16
 
-      - name: main to npm
+      - name: user to npm
         uses: JS-DevTools/npm-publish@v1
         with:
           token: ${{ secrets.RSLIB_NPM_TOKEN }}
           package: ./packages/user/package.json
+          access: public
+
+      - name: notify to npm
+        uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.RSLIB_NPM_TOKEN }}
+          package: ./packages/notify/package.json
           access: public
