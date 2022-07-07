@@ -22,4 +22,5 @@ jobs:
         uses: JS-DevTools/npm-publish@v1
         with:
           token: ${{ secrets.RSLIB_NPM_TOKEN }}
-          package: ./packages/user/package.json          
+          package: ./packages/user/package.json   
+          access: public       
