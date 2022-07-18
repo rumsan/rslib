@@ -2,7 +2,7 @@
   "name": "@rumsan/utils",
   "version": "2.0.2",
   "description": "Rumsan popular utilities",
-  "main": "src/index.js",
+  "main": "index.js",
   "author": "Rumsan",
   "license": "MIT",
   "scripts": {
