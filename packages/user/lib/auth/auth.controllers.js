@@ -17,7 +17,9 @@ const {
 module.exports = class extends AbstractController {
   constructor(db, config, overwrites) {
     super(db, config, overwrites);
-    this.table = overwrites?.AuthModel || new AuthModel().init(db);
+    this.table = overwrites?.AuthModel
+      ? new overwrites.AuthModel().init(db)
+      : new AuthModel().init(db);
   }
 
   registrations = {

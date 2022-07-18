@@ -23,7 +23,9 @@ module.exports = class extends AbstractController {
 
   constructor(db, config, overwrites) {
     super(db, config, overwrites);
-    this.table = overwrites?.RoleModel || new RoleModel().init(db);
+    this.table = overwrites?.RoleModel
+      ? new overwrites.RoleModel().init(db)
+      : new RoleModel().init(db);
   }
 
   getById(id) {
