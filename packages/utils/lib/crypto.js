@@ -43,7 +43,7 @@ const CryptoUtils = {
 
       return data;
     } catch (e) {
-      console.log(e);
+      console.log("validateJwtToken:", e.message);
       throw ERR.TOKEN_INVALID;
     }
   },

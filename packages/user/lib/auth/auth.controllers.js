@@ -122,12 +122,21 @@ module.exports = class extends AbstractController {
     );
 
     checkCondition(
+      cbData.user.id,
+      "Must send user.id in authenticate callback."
+    );
+
+    checkCondition(
       cbData.permissions && Array.isArray(cbData.permissions),
       "Must send permissions array in authenticate callback."
     );
 
     cbData.accessToken = generateJwtToken(
-      cbData,
+      {
+        user: cbData.user,
+        permissions: cbData.permissions,
+        userId: cbData.user.id,
+      },
       this.config.appSecret,
       this.config.jwtDuration
     );
