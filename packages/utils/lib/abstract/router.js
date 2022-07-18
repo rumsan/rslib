@@ -15,11 +15,12 @@ module.exports = class AbstractRouter {
 
   //Registration for HAPI application
   register(app) {
-    app.register({
-      name: this.name,
-      routes: this.routes,
-      validators: this.validators,
-      controllers: this.controllers.registrations,
-    });
+    if (app)
+      app.register({
+        name: this.name,
+        routes: this.routes,
+        validators: this.validators,
+        controllers: this.controllers.registrations,
+      });
   }
 };

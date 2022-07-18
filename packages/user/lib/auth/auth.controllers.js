@@ -113,16 +113,25 @@ module.exports = class extends AbstractController {
         throw throwError(ERR.LOGIN_INVALID);
       }
 
-    const user = await callback(auth.userId);
-    let accessToken = generateJwtToken(
-      { user: { id: user.id, name: user.name } },
+    const cbData = await callback(auth.userId);
+    checkCondition(cbData, "Must callback data with user and permissions.");
+
+    checkCondition(
+      cbData.user,
+      "Must send user object in authenticate callback."
+    );
+
+    checkCondition(
+      cbData.permissions && Array.isArray(cbData.permissions),
+      "Must send permissions array in authenticate callback."
+    );
+
+    cbData.accessToken = generateJwtToken(
+      cbData,
       this.config.appSecret,
       this.config.jwtDuration
     );
 
-    return {
-      accessToken,
-      user,
-    };
+    return cbData;
   }
 };

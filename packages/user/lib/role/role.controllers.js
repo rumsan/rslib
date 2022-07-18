@@ -5,10 +5,9 @@ const AbstractController = require("@rumsan/utils/lib/abstract/controller");
 const RoleModel = require("./role.model");
 const { ERR, checkCondition } = require("../../error");
 
-const stringToArray = (value) => {
-  if (typeof value == "string") return value.split(",");
-  else return value || [];
-};
+const {
+  ArrayUtils: { stringToArray },
+} = require("@rumsan/utils");
 
 module.exports = class extends AbstractController {
   registrations = {
@@ -48,32 +47,40 @@ module.exports = class extends AbstractController {
     return role.permissions;
   }
 
-  async getValidRoles() {
-    let roles = await this.table.findAll({
-      where: {
-        [Op.or]: [
-          {
-            expiryDate: null,
+  async listValidRoles(filterRoles) {
+    let roles = stringToArray(filterRoles);
+    let where = {
+      [Op.or]: [
+        {
+          expiryDate: null,
+        },
+        {
+          expiryDate: {
+            [Op.gt]: new Date(),
           },
-          {
-            expiryDate: {
-              [Op.gt]: new Date(),
-            },
-          },
-        ],
-      },
+        },
+      ],
+    };
+    if (roles.length) where.name = roles;
+    return this.table.findAll({
+      where,
       order: [["name", "ASC"]],
     });
-
-    return roles.map((r) => r.name);
   }
 
-  async checkForValidRoles(roles) {
-    if (typeof roles == "string") roles = roles.split(",");
-    let validRoles = await this.getValidRoles();
-    return roles.every((r) => {
-      return validRoles.includes(r);
+  async listValidRoleNames(filterRoles) {
+    let validRoles = await this.listValidRoles(filterRoles);
+    return validRoles.map((r) => r.name);
+  }
+
+  async calculatePermissions(roles) {
+    if (!roles) return [];
+    let validRoles = await this.listValidRoles(roles);
+    let perms = [];
+    validRoles.forEach((r) => {
+      perms = [...new Set([...perms, ...r.permissions])];
     });
+    return perms;
   }
 
   /*************** Write Functions **************/

@@ -1,6 +1,7 @@
 const AbstractController = require("@rumsan/utils/lib/abstract/controller");
 const UserModel = require("./user.model");
 const AuthController = require("../auth/auth.controllers");
+const RoleController = require("../role/role.controllers");
 
 const { ERR, throwError, checkCondition } = require("../../error");
 
@@ -36,10 +37,13 @@ module.exports = class extends AbstractController {
       : new UserModel().init(db);
     this.authController =
       overwrites?.AuthController || new AuthController(db, config, overwrites);
+    this.roleController =
+      overwrites?.RoleController || new RoleController(db, config, overwrites);
   }
 
-  _add(payload) {
+  async _add(payload) {
     if (this.config.autoApprove) payload.isApproved = true;
+    payload.roles = await this.roleController.listValidRoleNames(payload.roles);
     return this.table.create(payload);
   }
 
@@ -126,17 +130,29 @@ module.exports = class extends AbstractController {
     return user;
   }
 
-  async authUsingPassword(email, password) {
+  async authUsingPassword(email, password, callback) {
     if (!this.config.enablePasswordAuthentication)
       throw new Error(
         "Cannot login using password when enablePasswordAuthentication is false"
       );
+
+    let defaultCallback = async (userId) => {
+      let user = await this.getById(userId);
+      let permissions = await this.roleController.calculatePermissions(
+        user.roles
+      );
+
+      if (callback) return callback(user, permissions);
+      else
+        return {
+          user: { id: user.id, name: user.name },
+          permissions,
+        };
+    };
     return this.authController.authenticateUsingPassword(
       email,
       password,
-      (userId) => {
-        return this.getById(userId);
-      }
+      defaultCallback
     );
   }
 

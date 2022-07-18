@@ -1,6 +1,7 @@
 module.exports = {
   stringToArray(value) {
-    if (typeof value == "string") return value.split(",");
-    else return value || [];
+    value = value || [];
+    if (typeof value == "string") value = value.split(",");
+    return value.map((v) => v.trim());
   },
 };
