@@ -1,8 +1,8 @@
 let AbstractRouter = require("@rumsan/utils/lib/abstract/router");
-let AuthValidator = require("./auth.validators");
-const AuthController = require("./auth.controllers");
+let Validator = require("./auth.validators");
+const Controller = require("./auth.controllers");
 
-class Test extends AbstractRouter {
+module.exports = class extends AbstractRouter {
   routes = {
     authenticate: {
       method: "POST",
@@ -11,7 +11,7 @@ class Test extends AbstractRouter {
     },
     manageUsingAction: {
       method: "POST",
-      path: "/manage/",
+      path: "/manage",
       description: "Manage using actions.",
     },
     listUserAuthServices: {
@@ -25,12 +25,6 @@ class Test extends AbstractRouter {
       description: "Remove auth service for user.",
     },
   };
-  constructor(db, name, config, overwrites) {
-    super(db, name);
-    this.controllers =
-      overwrites?.AuthController || new AuthController(db, config, overwrites);
-    this.validators = overwrites?.AuthValidator || AuthValidator;
-  }
-}
-
-module.exports = Test;
+  controllers = new Controller(this.db, this.config).get();
+  validators = new Validator(this.config).get();
+};

@@ -20,7 +20,7 @@ const schema = {
 
 module.exports = class UserModel extends AbstractModel {
   schema = schema;
-  constructor() {
-    super("tblRoles");
+  constructor(db) {
+    super(db, "tblRoles");
   }
 };

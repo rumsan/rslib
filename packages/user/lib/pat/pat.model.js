@@ -1,5 +1,5 @@
 const AbstractModel = require("@rumsan/utils/lib/abstract/model");
-const { DataTypes } = require("DataTypes");
+const { DataTypes } = require("sequelize");
 
 const schema = {
   user_id: { type: ObjectId, required: true, ref: "User" }, //TODO
@@ -10,10 +10,9 @@ const schema = {
   expiryDate: DataTypes.DATE,
   scopes: [{ type: DataTypes.TEXT }],
 };
-
 module.exports = class UserModel extends AbstractModel {
   schema = schema;
-  constructor() {
-    super("tblPats");
+  constructor(db) {
+    super(db, "tblPats");
   }
 };

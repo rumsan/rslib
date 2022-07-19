@@ -20,11 +20,9 @@ module.exports = class extends AbstractController {
       this.removePermissions(req.params.name, req.payload),
   };
 
-  constructor(db, config, overwrites) {
-    super(db, config, overwrites);
-    this.table = overwrites?.RoleModel
-      ? new overwrites.RoleModel().init(db)
-      : new RoleModel().init(db);
+  constructor(db, config) {
+    super(db, config);
+    this.table = this.tblRoles = db.models.tblRoles || new RoleModel(db).init();
   }
 
   getById(id) {

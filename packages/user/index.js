@@ -16,14 +16,14 @@ module.exports = {
   AuthModel: require("./lib/auth/auth.model"),
   RoleModel: require("./lib/role/role.model"),
   UserModel: require("./lib/user/user.model"),
+  Auth: require("./lib/auth"),
+  Role: require("./lib/role"),
+  User: require("./lib/user"),
 
-  initModels(db, { UserModel, RoleModel, AuthModel, createAsociations } = {}) {
-    this.AuthModel = AuthModel || this.AuthModel;
-    this.RoleModel = RoleModel || this.RoleModel;
-    this.UserModel = UserModel || this.UserModel;
-    const _authModel = new this.AuthModel().init(db);
-    const _roleModel = new this.RoleModel().init(db);
-    const _userModel = new this.UserModel().init(db);
+  initModels(db, createAsociations) {
+    const _authModel = new this.AuthModel(db).init();
+    const _roleModel = new this.RoleModel(db).init();
+    const _userModel = new this.UserModel(db).init();
 
     _createAssociations({ _userModel, _authModel });
     if (createAsociations)
@@ -36,25 +36,17 @@ module.exports = {
     };
   },
 
-  register(db, config, overwrites) {
+  initControllers(db, config) {
     config = {
       ...defaultConfigs,
       ...config,
     };
-
     return {
-      User: (app, name) =>
-        _registerModule("./lib/user", db, app, name, config, overwrites),
-      Role: (app, name) =>
-        _registerModule("./lib/role", db, app, name, config, overwrites),
+      AuthController: new this.AuthController(db, config),
+      RoleController: new this.RoleController(db, config),
+      UserController: new this.UserController(db, config),
     };
   },
-};
-
-const _registerModule = (modulePath, db, app, name, config, overwrites) => {
-  let mdl = require(modulePath);
-  mdl = new mdl(db, name, config, overwrites);
-  return mdl.register(app);
 };
 
 const _createAssociations = ({ _userModel, _authModel }) => {

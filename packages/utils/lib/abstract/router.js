@@ -1,26 +1,34 @@
 module.exports = class AbstractRouter {
   routes = {};
 
-  constructor(db, name) {
+  constructor(db, name, config) {
     if (this.constructor == AbstractRouter) {
       throw new Error("Abstract classes can't be instantiated.");
     }
-    if (!db) throw new Error("Must send valid sequelize db reference.");
+    if (!name) throw new Error("AbstractRouter: Must send route name.");
+    if (!db)
+      throw new Error(
+        "AbstractRouter: Must send valid sequelize db reference."
+      );
     this.name = name;
+    this.db = db;
+    this.config = config;
   }
 
-  addRoutes(routes) {
+  add(routes) {
     this.routes = { ...this.routes, ...routes };
   }
 
-  //Registration for HAPI application
+  get() {
+    return this.routes;
+  }
+
   register(app) {
-    if (app)
-      app.register({
-        name: this.name,
-        routes: this.routes,
-        validators: this.validators,
-        controllers: this.controllers.registrations,
-      });
+    app.register({
+      name: this.name,
+      routes: this.routes,
+      validators: this.validators,
+      controllers: this.controllers,
+    });
   }
 };

@@ -1,8 +1,8 @@
 let AbstractRouter = require("@rumsan/utils/lib/abstract/router");
-let UserValidator = require("./user.validators");
-const UserController = require("./user.controllers");
+let Validator = require("./user.validators");
+const Controller = require("./user.controllers");
 
-class User extends AbstractRouter {
+module.exports = class extends AbstractRouter {
   routes = {
     add: {
       method: "POST",
@@ -51,12 +51,6 @@ class User extends AbstractRouter {
     },
   };
 
-  constructor(db, name, config, overwrites) {
-    super(db, name);
-    this.controllers =
-      overwrites?.UserController || new UserController(db, config, overwrites);
-    this.validators = overwrites?.UserValidator || UserValidator;
-  }
-}
-
-module.exports = User;
+  controllers = new Controller(this.db, this.config).get();
+  validators = new Validator(this.config).get();
+};

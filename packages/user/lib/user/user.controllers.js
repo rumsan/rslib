@@ -30,21 +30,17 @@ module.exports = class extends AbstractController {
    * - enablePasswordAuthentication: must send password  while signing up
    * - ERR: Custom error message package
    */
-  constructor(db, config, overwrites) {
-    super(db, config, overwrites);
-    this.table = overwrites?.UserModel
-      ? new overwrites.UserModel().init(db)
-      : new UserModel().init(db);
-    this.authController =
-      overwrites?.AuthController || new AuthController(db, config, overwrites);
-    this.roleController =
-      overwrites?.RoleController || new RoleController(db, config, overwrites);
+  constructor(db, config) {
+    super(db, config);
+    this.table = this.tblUsers = db.models.tblUsers || new UserModel(db).init();
+    this.authController = new AuthController(db, config);
+    this.roleController = new RoleController(db, config);
   }
 
   async _add(payload) {
     if (this.config.autoApprove) payload.isApproved = true;
     payload.roles = await this.roleController.listValidRoleNames(payload.roles);
-    return this.table.create(payload);
+    return this.tblUsers.create(payload);
   }
 
   async signupUsingEmail(payload) {
@@ -67,18 +63,18 @@ module.exports = class extends AbstractController {
   }
 
   approve(id) {
-    return this.table.update({ isApproved: true }, { where: { id } });
+    return this.tblUsers.update({ isApproved: true }, { where: { id } });
   }
 
   list() {
     //TODO: enable search filter
-    return this.table.findAll({
+    return this.tblUsers.findAll({
       order: [["first", "ASC"]],
     });
   }
 
   remove(id) {
-    return this.table.destroy({ where: { id } });
+    return this.tblUsers.destroy({ where: { id } });
   }
 
   /**
@@ -91,7 +87,7 @@ module.exports = class extends AbstractController {
     delete data.isApproved;
     delete data.roles;
     delete data.wallet_address;
-    await this.table.update(data, {
+    await this.tblUsers.update(data, {
       where: { id },
       individualHooks: true,
       returning: true,
@@ -102,7 +98,7 @@ module.exports = class extends AbstractController {
   async updateEmail(id, email) {
     checkCondition(id, ERR.USERID_REQ);
     checkCondition(email, ERR.EMAIL_REQ);
-    await this.table.update(
+    await this.tblUsers.update(
       { email },
       { where: { id }, individualHooks: true }
     );
@@ -112,7 +108,7 @@ module.exports = class extends AbstractController {
   async updatePhone(id, phone) {
     checkCondition(id, ERR.USERID_REQ);
     checkCondition(phone, ERR.PHONE_REQ);
-    await this.table.update(
+    await this.tblUsers.update(
       { phone },
       { where: { id }, individualHooks: true }
     );
@@ -121,11 +117,11 @@ module.exports = class extends AbstractController {
 
   getByUUID(userId) {
     checkCondition(isUUID(userId), "Must send UUID");
-    return this.table.findOne({ where: { uuid: userId } });
+    return this.tblUsers.findOne({ where: { uuid: userId } });
   }
 
   async getById(id, showError = false) {
-    let user = await this.table.findByPk(id);
+    let user = await this.tblUsers.findByPk(id);
     if (!user && showError) throwError(ERR.USER_NOEXISTS);
     return user;
   }
@@ -165,7 +161,7 @@ module.exports = class extends AbstractController {
     user.roles = user.roles || [];
     roles = [...new Set([...roles, ...user.roles])];
 
-    user = await this.table.update(
+    user = await this.tblUsers.update(
       { roles },
       { where: { id }, individualHooks: true, returning: true }
     );
@@ -173,7 +169,7 @@ module.exports = class extends AbstractController {
   }
 
   // async hasRole(id, role) {
-  //   let role = await this.table.findOne({ where: { name } });
+  //   let role = await this.tblUsers.findOne({ where: { name } });
   //   if (!role) return false;
   //   return role.permissions.indexOf(permission) > -1;
   // }
@@ -187,7 +183,7 @@ module.exports = class extends AbstractController {
   //   permissions = role.permissions.filter(
   //     (item) => !permissions.includes(item)
   //   );
-  //   await this.table.update(
+  //   await this.tblUsers.update(
   //     { permissions },
   //     { where: { name, isSystem: false } }
   //   );

@@ -1,8 +1,8 @@
 let AbstractRouter = require("@rumsan/utils/lib/abstract/router");
-let RoleValidator = require("./role.validators");
-const RoleController = require("./role.controllers");
+let Validator = require("./role.validators");
+const Controller = require("./role.controllers");
 
-class Test extends AbstractRouter {
+module.exports = class extends AbstractRouter {
   routes = {
     add: {
       method: "POST",
@@ -35,12 +35,6 @@ class Test extends AbstractRouter {
       description: "Remove permissions for the role.",
     },
   };
-  constructor(db, name, config, overwrites) {
-    super(db, name);
-    this.controllers =
-      overwrites?.RoleController || new RoleController(db, config, overwrites);
-    this.validators = overwrites?.RoleValidator || RoleValidator;
-  }
-}
-
-module.exports = Test;
+  controllers = new Controller(this.db, this.config).get();
+  validators = new Validator(this.config).get();
+};

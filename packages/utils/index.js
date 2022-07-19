@@ -1,7 +1,7 @@
 const Core = require("./lib/core");
 module.exports = {
   loadModule: Core.loadNodeModule,
-  AbstractClass: require("./lib/abstract"),
+  AbstractClasses: require("./lib/abstract"),
   Core,
   Crypto: require("./lib/crypto"),
   NameParser: require("./lib/nameParser"),

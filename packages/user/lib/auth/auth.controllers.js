@@ -15,11 +15,9 @@ const {
  */
 
 module.exports = class extends AbstractController {
-  constructor(db, config, overwrites) {
-    super(db, config, overwrites);
-    this.table = overwrites?.AuthModel
-      ? new overwrites.AuthModel().init(db)
-      : new AuthModel().init(db);
+  constructor(db, config) {
+    super(db, config);
+    this.table = this.tblAuths = db.models.tblAuths || new AuthModel(db).init();
   }
 
   registrations = {
@@ -40,11 +38,11 @@ module.exports = class extends AbstractController {
   }
 
   getById(id) {
-    return this.table.findByPk(id);
+    return this.tblAuths.findByPk(id);
   }
 
   async getByServiceId(service, serviceId, errMsg) {
-    let auth = await this.table.findOne({
+    let auth = await this.tblAuths.findOne({
       where: { service, serviceId },
     });
     if (!auth && errMsg) throwError(errMsg);
@@ -52,19 +50,19 @@ module.exports = class extends AbstractController {
   }
 
   async add(userId, service, serviceId, details = {}) {
-    let auth = await this.table.findOne({
+    let auth = await this.tblAuths.findOne({
       where: { service, serviceId },
     });
     if (auth) return auth;
-    return this.table.create({ userId, service, serviceId, details });
+    return this.tblAuths.create({ userId, service, serviceId, details });
   }
 
   listUserAuthServices(userId) {
-    return this.table.findAll({ userId });
+    return this.tblAuths.findAll({ userId });
   }
 
   removeUserAuthService(userId, service) {
-    return this.table.destroy({ userId, service });
+    return this.tblAuths.destroy({ userId, service });
   }
 
   async addPassword(email, password, userId) {
@@ -76,13 +74,13 @@ module.exports = class extends AbstractController {
 
     let auth = await this.getByServiceId("email", email);
     if (auth) {
-      return this.table.update(
+      return this.tblAuths.update(
         { password: { salt, hash } },
         { where: { service: "email", serviceId: email } }
       );
     } else {
       checkCondition(userId, "Must send userId.");
-      return this.table.create({
+      return this.tblAuths.create({
         userId,
         service: "email",
         serviceId: email,
@@ -95,7 +93,7 @@ module.exports = class extends AbstractController {
     checkCondition(email, "Must send email.");
     checkCondition(password, "Must send password.");
 
-    let auth = await this.table.findOne({
+    let auth = await this.tblAuths.findOne({
       where: { service: "email", serviceId: email },
     });
 
