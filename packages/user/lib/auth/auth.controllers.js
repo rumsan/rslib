@@ -43,6 +43,14 @@ module.exports = class extends AbstractController {
     return this.table.findByPk(id);
   }
 
+  async getByServiceId(service, serviceId, errMsg) {
+    let auth = await this.table.findOne({
+      where: { service, serviceId },
+    });
+    if (!auth && errMsg) throwError(errMsg);
+    return auth;
+  }
+
   async add(userId, service, serviceId, details = {}) {
     let auth = await this.table.findOne({
       where: { service, serviceId },
@@ -66,9 +74,7 @@ module.exports = class extends AbstractController {
     const salt = saltHash.salt.toString("base64");
     const hash = saltHash.hash.toString("base64");
 
-    let auth = await this.table.findOne({
-      where: { service: "email", serviceId: email },
-    });
+    let auth = await this.getByServiceId("email", email);
     if (auth) {
       return this.table.update(
         { password: { salt, hash } },
@@ -88,7 +94,6 @@ module.exports = class extends AbstractController {
   async authenticateUsingPassword(email, password, callback) {
     checkCondition(email, "Must send email.");
     checkCondition(password, "Must send password.");
-    checkCondition(callback, "Must send callback function.");
 
     let auth = await this.table.findOne({
       where: { service: "email", serviceId: email },
@@ -113,7 +118,42 @@ module.exports = class extends AbstractController {
         throw throwError(ERR.LOGIN_INVALID);
       }
 
-    const cbData = await callback(auth.userId);
+    return this._afterAuthenticate(auth.userId, callback);
+
+    // const cbData = await callback(auth.userId);
+    // checkCondition(cbData, "Must callback data with user and permissions.");
+
+    // checkCondition(
+    //   cbData.user,
+    //   "Must send user object in authenticate callback."
+    // );
+
+    // checkCondition(
+    //   cbData.user.id,
+    //   "Must send user.id in authenticate callback."
+    // );
+
+    // checkCondition(
+    //   cbData.permissions && Array.isArray(cbData.permissions),
+    //   "Must send permissions array in authenticate callback."
+    // );
+
+    // cbData.accessToken = generateJwtToken(
+    //   {
+    //     user: cbData.user,
+    //     permissions: cbData.permissions,
+    //     userId: cbData.user.id,
+    //   },
+    //   this.config.appSecret,
+    //   this.config.jwtDuration
+    // );
+
+    // return cbData;
+  }
+
+  async _afterAuthenticate(userId, callback) {
+    checkCondition(callback, "Must send callback function.");
+    const cbData = await callback(userId);
     checkCondition(cbData, "Must callback data with user and permissions.");
 
     checkCondition(
@@ -142,5 +182,36 @@ module.exports = class extends AbstractController {
     );
 
     return cbData;
+  }
+
+  async createOTP(service, serviceId) {
+    let auth = await this.getByServiceId(
+      service,
+      serviceId,
+      `${serviceId} does not exist.`
+    );
+
+    const code = Math.floor(100000 + Math.random() * 900000);
+    const expireOn = new Date(new Date().getTime() + 10 * 60000); //10 minutes later
+    auth.otp = { code, expireOn };
+    await auth.save();
+    return code;
+  }
+
+  async authenticateUsingOtp(service, serviceId, otp, callback) {
+    let auth = await this.getByServiceId(
+      service,
+      serviceId,
+      `${serviceId} does not exist.`
+    );
+
+    checkCondition(auth.otp, "Invalid OTP");
+    checkCondition(auth.otp.code, "Invalid OTP");
+    checkCondition(auth.otp.code === otp, "Invalid OTP sent");
+    checkCondition(
+      new Date() < new Date(auth.otp.expireOn),
+      "OTP has expiread"
+    );
+    return this._afterAuthenticate(auth.userId, callback);
   }
 };

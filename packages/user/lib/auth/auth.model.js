@@ -43,6 +43,17 @@ const schema = {
       return this.setDataValue("password", JSON.stringify(v));
     },
   },
+  otp: {
+    type: DataTypes.JSON,
+    get() {
+      return JSON.parse(this.getDataValue("otp"));
+    },
+    set(v) {
+      if (!(v.hasOwnProperty("code") && v.hasOwnProperty("expireOn")))
+        throw new Error("OTP must send code and expireOn");
+      return this.setDataValue("otp", JSON.stringify(v));
+    },
+  },
   falseAttempts: {
     type: DataTypes.INTEGER,
     defaultValue: 0,
@@ -58,6 +69,13 @@ const schema = {
 
 module.exports = class UserModel extends AbstractModel {
   schema = schema;
+  indexes = [
+    {
+      unique: true,
+      fields: ["service", "serviceId"],
+      name: "unique_service",
+    },
+  ];
   constructor() {
     super("tblAuths");
   }

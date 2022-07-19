@@ -17,6 +17,7 @@ module.exports = class AbstractController {
     return db.define(this.tableName, this.schema, {
       timestamps: true,
       freezeTableName: true,
+      indexes: this.indexes || [],
     });
   }
 };

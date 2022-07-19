@@ -55,6 +55,8 @@ module.exports = {
       throw new Error(
         "RSError has not been defined. Please define it in Error constants file."
       );
+    if (typeof err == "string")
+      throw new RSError(err, "unknown", 500, "rs-user");
     const [msg, name, httpCode] = err;
     throw new RSError(msg, name, httpCode, "rs-user");
   },
