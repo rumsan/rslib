@@ -31,3 +31,10 @@ jobs:
           token: ${{ secrets.RSLIB_NPM_TOKEN }}
           package: ./packages/notify/package.json
           access: public
+
+      - name: utils to npm
+        uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.RSLIB_NPM_TOKEN }}
+          package: ./packages/utils/package.json
+          access: public
