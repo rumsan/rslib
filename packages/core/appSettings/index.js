@@ -6,6 +6,10 @@ class AppSettings {
   async init(db) {
     this.controller = Controller(db);
     Model(db);
+    await this.refresh();
+  }
+
+  async refresh() {
     this.settings = await this.controller._list();
   }
 

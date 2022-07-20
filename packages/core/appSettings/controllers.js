@@ -23,9 +23,10 @@ class Controller extends AbstractController {
     listPublic: () => this.listPublic(),
   };
 
-  constructor(db) {
+  constructor(db, eventMgr) {
     super(db);
     this.table = SettingModel(db);
+    this.eventMgr = eventMgr;
     delete this.db;
     delete this.config;
   }
@@ -145,8 +146,12 @@ class Controller extends AbstractController {
     }
 
     setting.value = { data: value };
-    return setting.save();
+    let retSett = await setting.save();
+    if (this.eventMgr) this.eventMgr.emit("update");
+    return retSett;
   }
 }
 
-module.exports = (db) => new Controller(db);
+module.exports = (db, eventMgr) => {
+  return new Controller(db, eventMgr);
+};
