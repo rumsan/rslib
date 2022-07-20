@@ -1,4 +1,4 @@
-let AbstractRouter = require("@rumsan/utils/lib/abstract/router");
+let AbstractRouter = require("@rumsan/core/abstract/router");
 let Validator = require("./role.validators");
 const Controller = require("./role.controllers");
 

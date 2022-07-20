@@ -1,4 +1,4 @@
-const AbstractController = require("@rumsan/utils/lib/abstract/controller");
+const AbstractController = require("@rumsan/core/abstract/controller");
 const AuthModel = require("./auth.model");
 
 const { ERR, throwError, checkCondition } = require("../../error");
@@ -7,7 +7,7 @@ const {
   saltAndHash,
   hash,
   generateJwtToken,
-} = require("@rumsan/utils/lib/crypto");
+} = require("@rumsan/core/utils/cryptoUtils");
 
 /**
  * Any where you want to get user data after the function,

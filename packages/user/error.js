@@ -47,7 +47,7 @@ const ERR = {
   ],
 };
 
-const { RSError } = require("@rumsan/utils");
+const { RSError } = require("@rumsan/core/utils");
 module.exports = {
   ERR,
   throwError(err) {

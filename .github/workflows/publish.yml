@@ -32,9 +32,9 @@ jobs:
           package: ./packages/notify/package.json
           access: public
 
-      - name: utils to npm
+      - name: core to npm
         uses: JS-DevTools/npm-publish@v1
         with:
           token: ${{ secrets.RSLIB_NPM_TOKEN }}
-          package: ./packages/utils/package.json
+          package: ./packages/core/package.json
           access: public

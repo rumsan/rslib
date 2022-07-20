@@ -1,6 +1,6 @@
-const AbstractModel = require("@rumsan/utils/lib/abstract/model");
+const AbstractModel = require("@rumsan/core/abstract/model");
 const { DataTypes } = require("sequelize");
-const { NameParser } = require("@rumsan/utils");
+const { NameParser } = require("@rumsan/core/utils");
 
 const schema = {
   first: {

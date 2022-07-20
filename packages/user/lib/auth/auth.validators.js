@@ -1,5 +1,5 @@
 const Joi = require("joi");
-const AbstractValidator = require("@rumsan/utils/lib/abstract/validator");
+const AbstractValidator = require("@rumsan/core/abstract/validator");
 
 module.exports = class extends AbstractValidator {
   validators = {

@@ -1,13 +1,13 @@
 const { Op } = require("sequelize");
 const sequelize = require("sequelize");
 
-const AbstractController = require("@rumsan/utils/lib/abstract/controller");
+const AbstractController = require("@rumsan/core/abstract/controller");
 const RoleModel = require("./role.model");
 const { ERR, checkCondition } = require("../../error");
 
 const {
   ArrayUtils: { stringToArray },
-} = require("@rumsan/utils");
+} = require("@rumsan/core/utils");
 
 module.exports = class extends AbstractController {
   registrations = {

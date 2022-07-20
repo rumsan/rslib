@@ -1,4 +1,4 @@
-const AbstractController = require("@rumsan/utils/lib/abstract/controller");
+const AbstractController = require("@rumsan/core/abstract/controller");
 const UserModel = require("./user.model");
 const AuthController = require("../auth/auth.controllers");
 const RoleController = require("../role/role.controllers");
@@ -6,9 +6,9 @@ const RoleController = require("../role/role.controllers");
 const { ERR, throwError, checkCondition } = require("../../error");
 
 const {
-  DataTypes: { convertToInteger, isUUID },
+  TypeUtils: { convertToInteger, isUUID },
   ArrayUtils: { stringToArray },
-} = require("@rumsan/utils");
+} = require("@rumsan/core/utils");
 
 module.exports = class extends AbstractController {
   registrations = {

@@ -1,4 +1,4 @@
-const AbstractModel = require("@rumsan/utils/lib/abstract/model");
+const AbstractModel = require("@rumsan/core/abstract/model");
 const { AUTH_SERVICE } = require("../../constants");
 const { DataTypes } = require("sequelize");
 

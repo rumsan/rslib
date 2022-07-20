@@ -1,0 +1,8 @@
+{
+  "name": "@rumsan/core",
+  "version": "1.0.0",
+  "description": "Rumsan core libraries",
+  "main": "index.js",
+  "author": "Rumsan Group",
+  "homepage": "https://github.com/rumsan/rslib"
+}

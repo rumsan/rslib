@@ -1,10 +1,11 @@
 const AbstractController = require("../abstract/controller");
 const SettingModel = require("./model");
+
 const {
   ArrayUtils: { stringToArray },
-  DataTypes: { isJsonObject },
+  TypeUtils: { isJsonObject },
   ObjectUtils: { convertObjectKeysToUpperCase },
-} = require("../../index");
+} = require("../utils");
 
 const hasAllFields = (requiredFields, suppliedFields) => {
   requiredFields = stringToArray(requiredFields);
@@ -19,11 +20,14 @@ class Controller extends AbstractController {
   registrations = {
     update: (req) => this.update(req.params.name, req.payload),
     getPublic: (req) => this.getPublic(req.params.name),
+    listPublic: () => this.listPublic(),
   };
 
   constructor(db) {
     super(db);
     this.table = SettingModel(db);
+    delete this.db;
+    delete this.config;
   }
 
   //IMPORTANT: function beginning with _. Call internally only
@@ -62,10 +66,7 @@ class Controller extends AbstractController {
       let value = settings[name].value;
       let payload = {
         name,
-        isReadOnly:
-          settings[name].isReadOnly === undefined
-            ? true
-            : settings[name].isReadOnly,
+        isReadOnly: settings[name].isReadOnly,
         isPrivate:
           settings[name].isPrivate === undefined
             ? true
@@ -105,23 +106,45 @@ class Controller extends AbstractController {
 
   //public functions
   async getPublic(name) {
+    if (!name) throw new Error("Must send setting name");
     name = name.toUpperCase();
     let setting = await this.table.findOne({
       where: { name, isPrivate: false },
     });
-    if (!setting) return null;
+    if (!setting) throw new Error("Setting name does not exists");
     return setting.value.data;
   }
 
+  async listPublic() {
+    let list = await this.table.findAll({
+      where: { isPrivate: false },
+    });
+    let objList = {};
+    list.forEach((v) => {
+      objList[v.name] = v.value.data;
+    });
+    return objList;
+  }
+
   async update(name, value) {
+    if (!name) throw new Error("Must send setting name");
     name = name.toUpperCase();
     let setting = await this.table.findOne({
       where: { name, isPrivate: false },
     });
     if (!setting) throw new Error("Invalid setting name.");
     if (setting.isReadOnly) throw new Error("Setting is read-only.");
-    value = { data: value };
-    setting.value = value;
+
+    if (setting.requiredFields) {
+      value = convertObjectKeysToUpperCase(value);
+      const suppliedFields = Object.keys(value);
+      if (!hasAllFields(setting.requiredFields, suppliedFields))
+        throw new Error(
+          `Must send all required fields [${setting.requiredFields.join(",")}]`
+        );
+    }
+
+    setting.value = { data: value };
     return setting.save();
   }
 }
