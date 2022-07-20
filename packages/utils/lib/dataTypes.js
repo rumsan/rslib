@@ -17,4 +17,14 @@ module.exports = {
     }
     return true;
   },
+
+  isJsonObject(str) {
+    try {
+      if (Array.isArray(str)) return false;
+      var json = JSON.parse(JSON.stringify(str));
+      return typeof json === "object";
+    } catch (e) {
+      return false;
+    }
+  },
 };

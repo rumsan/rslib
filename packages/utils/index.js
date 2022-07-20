@@ -6,6 +6,7 @@ module.exports = {
   Crypto: require("./lib/crypto"),
   NameParser: require("./lib/nameParser"),
   DataTypes: require("./lib/dataTypes"),
-  ArrayUtils: require("./lib/array"),
+  ArrayUtils: require("./lib/arrayUtils"),
+  ObjectUtils: require("./lib/objectUtils"),
   RSError: require("./lib/rserror"),
 };

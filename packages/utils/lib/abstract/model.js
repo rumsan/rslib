@@ -12,7 +12,7 @@ module.exports = class AbstractModel {
 
   schema = {};
 
-  add(schema) {
+  addSchema(schema) {
     this.schema = { ...this.schema, ...schema };
   }
 
@@ -24,7 +24,7 @@ module.exports = class AbstractModel {
     });
   }
 
-  get() {
+  getSchema() {
     return this.schema;
   }
 };

@@ -7,19 +7,17 @@ module.exports = class AbstractController {
       throw new Error(
         "AbstractController:Must send valid sequelize db reference."
       );
-    if (!config)
-      throw new Error("AbstractController:Must send config parameter");
     this.db = db;
     this.config = config;
   }
 
   registrations = {};
 
-  add(newControllers) {
+  addControllers(newControllers) {
     this.registrations = { ...this.registrations, ...newControllers };
   }
 
-  get() {
+  getControllers() {
     return this.registrations;
   }
 };

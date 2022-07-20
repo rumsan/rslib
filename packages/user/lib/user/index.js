@@ -51,6 +51,6 @@ module.exports = class extends AbstractRouter {
     },
   };
 
-  controllers = new Controller(this.db, this.config).get();
-  validators = new Validator(this.config).get();
+  controllers = new Controller(this.db, this.config).getControllers();
+  validators = new Validator(this.config).getValidators();
 };

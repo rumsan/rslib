@@ -15,11 +15,11 @@ module.exports = class AbstractRouter {
     this.config = config;
   }
 
-  add(routes) {
+  addRoutes(routes) {
     this.routes = { ...this.routes, ...routes };
   }
 
-  get() {
+  getRoutes() {
     return this.routes;
   }
 
