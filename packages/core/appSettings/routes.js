@@ -1,12 +1,11 @@
 let AbstractRouter = require("../abstract/router");
 let Validator = require("./validators");
 const Controller = require("./controllers");
-var events = require("events");
-
 module.exports = class extends AbstractRouter {
-  events = new events.EventEmitter();
   constructor(db, name) {
     super(db, name);
+    this.addController(Controller(this.db));
+    this.addValidator(Validator());
   }
   routes = {
     listPublic: {
@@ -25,6 +24,4 @@ module.exports = class extends AbstractRouter {
       description: "Get an app setting.",
     },
   };
-  controllers = Controller(this.db, this.events).getControllers();
-  validators = Validator();
 };

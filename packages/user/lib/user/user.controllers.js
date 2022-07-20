@@ -78,7 +78,7 @@ module.exports = class extends AbstractController {
   }
 
   /**
-   * IMPORTANT: DO NOT OVERWRITE this function use super.update()
+   * IMPORTANT: DO NOT OVERWRITE this function. Extend using super.update()
    */
   async update(id, data) {
     if (!id) throwError(ERR.USERID_REQ);

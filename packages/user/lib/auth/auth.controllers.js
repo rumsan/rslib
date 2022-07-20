@@ -29,6 +29,8 @@ module.exports = class extends AbstractController {
     listUserAuthServices: (req) => this.remove(req.params.userId),
     removeUserAuthService: (req) =>
       this.remove(req.params.userId, req.payload.service),
+    getOtpForService: (req) =>
+      this.getOtpForService(req.payload.service, req.payload.serviceId),
   };
 
   manageUsingAction(userId, action, data) {
@@ -182,7 +184,7 @@ module.exports = class extends AbstractController {
     return cbData;
   }
 
-  async createOTP(service, serviceId) {
+  async getOtpForService(service, serviceId) {
     let auth = await this.getByServiceId(
       service,
       serviceId,
@@ -193,6 +195,12 @@ module.exports = class extends AbstractController {
     const expireOn = new Date(new Date().getTime() + 10 * 60000); //10 minutes later
     auth.otp = { code, expireOn };
     await auth.save();
+    auth = JSON.stringify(auth);
+    auth = JSON.parse(auth);
+    delete auth.password;
+    delete auth.createdAt;
+    delete auth.updatedAt;
+    this.emit("otp_created", code, auth);
     return code;
   }
 

@@ -23,6 +23,15 @@ module.exports = class extends AbstractValidator {
         userId: Joi.number().required(),
       }),
     },
+    getOtpForService: {
+      payload: Joi.object({
+        service: Joi.string()
+          .required()
+          .example("email")
+          .error(new Error("Invalid auth service.")),
+        serviceId: Joi.string().required().example("test@rumsan.com"),
+      }),
+    },
     removeUserAuthService: {
       params: Joi.object({
         userId: Joi.number().required(),

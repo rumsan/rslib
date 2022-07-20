@@ -1,6 +1,5 @@
 module.exports = class AbstractRouter {
   routes = {};
-
   constructor(db, name, config) {
     if (this.constructor == AbstractRouter) {
       throw new Error("Abstract classes can't be instantiated.");
@@ -13,6 +12,21 @@ module.exports = class AbstractRouter {
     this.name = name;
     this.db = db;
     this.config = config;
+  }
+
+  addController(controller) {
+    if (controller.getControllers) {
+      this.Controller = controller;
+      this.controllers = controller.getControllers();
+    } else {
+      this.controllers = controller;
+    }
+  }
+
+  addValidator(validator) {
+    this.validators = validator.getValidators
+      ? validator.getValidators()
+      : validator;
   }
 
   addRoutes(routes) {

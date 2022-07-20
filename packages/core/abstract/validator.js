@@ -8,7 +8,7 @@ module.exports = class AbstractValidator {
 
   validators = {};
 
-  addValidators(validators) {
+  addValidator(validators) {
     this.validators = { ...this.validators, ...validators };
   }
 

@@ -3,6 +3,11 @@ let Validator = require("./role.validators");
 const Controller = require("./role.controllers");
 
 module.exports = class extends AbstractRouter {
+  constructor(db, name, config) {
+    super(db, name, config);
+    this.addController(new Controller(this.db, this.config));
+    this.addValidator(new Validator(this.config));
+  }
   routes = {
     add: {
       method: "POST",
@@ -35,6 +40,4 @@ module.exports = class extends AbstractRouter {
       description: "Remove permissions for the role.",
     },
   };
-  controllers = new Controller(this.db, this.config).getControllers();
-  validators = new Validator(this.config).getValidators();
 };

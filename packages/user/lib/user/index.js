@@ -3,6 +3,11 @@ let Validator = require("./user.validators");
 const Controller = require("./user.controllers");
 
 module.exports = class extends AbstractRouter {
+  constructor(db, name, config) {
+    super(db, name, config);
+    this.addController(new Controller(this.db, this.config));
+    this.addValidator(new Validator(this.config));
+  }
   routes = {
     add: {
       method: "POST",
@@ -50,7 +55,4 @@ module.exports = class extends AbstractRouter {
       description: "Remove user.",
     },
   };
-
-  controllers = new Controller(this.db, this.config).getControllers();
-  validators = new Validator(this.config).getValidators();
 };

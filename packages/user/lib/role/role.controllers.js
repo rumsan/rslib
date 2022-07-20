@@ -98,9 +98,15 @@ module.exports = class extends AbstractController {
       let permissions = [
         ...new Set([...payload.permissions, ...role.permissions]),
       ];
+      this.emit("permission_add", {
+        name: payload.name,
+        permissions,
+        isSystem: false,
+      });
       return this.addPermissions(payload.name, permissions, true);
     } else {
       payload.isSystem = false;
+      this.emit("add", payload);
       return this.table.create(payload);
     }
   }

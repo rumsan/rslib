@@ -1,5 +1,7 @@
-module.exports = class AbstractController {
+var EventEmitter = require("events");
+module.exports = class AbstractController extends EventEmitter {
   constructor(db, config) {
+    super();
     if (this.constructor == AbstractController) {
       throw new Error("Abstract classes can't be instantiated.");
     }

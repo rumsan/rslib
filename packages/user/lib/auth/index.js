@@ -3,11 +3,21 @@ let Validator = require("./auth.validators");
 const Controller = require("./auth.controllers");
 
 module.exports = class extends AbstractRouter {
+  constructor(db, name, config) {
+    super(db, name, config);
+    this.addController(new Controller(this.db, this.config));
+    this.addValidator(new Validator(this.config));
+  }
   routes = {
     authenticate: {
       method: "POST",
       path: "",
       description: "Authenticate user using selected services.",
+    },
+    getOtpForService: {
+      method: "POST",
+      path: "/otp",
+      description: "Get OTP for user",
     },
     manageUsingAction: {
       method: "POST",
@@ -25,6 +35,4 @@ module.exports = class extends AbstractRouter {
       description: "Remove auth service for user.",
     },
   };
-  controllers = new Controller(this.db, this.config).getControllers();
-  validators = new Validator(this.config).getValidators();
 };
