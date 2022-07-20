@@ -14,7 +14,9 @@ class AppSettings {
   }
 
   get(name) {
-    let settVal = this.SETTINGS[name];
+    if (!name) throw new Error("must send setting name");
+    name = name.toUpperCase();
+    let settVal = this.settings[name];
     if (!settVal) throw new Error(`AppSetting '${name}' does not exist.`);
     return settVal;
   }
