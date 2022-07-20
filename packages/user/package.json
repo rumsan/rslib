@@ -1,6 +1,6 @@
 {
   "name": "@rumsan/user",
-  "version": "1.0.204",
+  "version": "1.0.205",
   "description": "This manages users and access control for application",
   "main": "index.js",
   "author": "Rumsan",
@@ -15,7 +15,7 @@
     "lzutf8": "^0.6.3",
     "pg": "^8.7.3",
     "pg-hstore": "^2.3.4",
-    "@rumsan/core": "^1.0.0",
+    "@rumsan/core": "*",
     "sequelize": "^6.21.0"
   },
   "devDependencies": {
