@@ -7,6 +7,7 @@ module.exports = {
     PHONE: "phone",
     GOOGLE: "google",
     APPLE: "apple",
+    TWITTER: "twitter",
     FACEBOOK: "facebook",
     GITHUB: "github",
     WALLET: "wallet",

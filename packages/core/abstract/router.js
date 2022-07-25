@@ -1,29 +1,31 @@
 module.exports = class AbstractRouter {
   routes = {};
-  constructor(db, name, config) {
+  constructor(options) {
     if (this.constructor == AbstractRouter) {
       throw new Error("Abstract classes can't be instantiated.");
     }
-    if (!name) throw new Error("AbstractRouter: Must send route name.");
-    if (!db)
+    Object.assign(this, options);
+    if (!this.name) throw new Error("AbstractRouter: Must send route name.");
+    if (!this.db)
       throw new Error(
         "AbstractRouter: Must send valid sequelize db reference."
       );
-    this.name = name;
-    this.db = db;
-    this.config = config;
+    // this.name = name;
+    // this.db = db;
+    // this.config = config;
+    // this.listeners = listeners;
   }
 
-  addController(controller) {
-    if (controller.getControllers) {
+  setController(controller) {
+    if (controller.getRegisteredControllers) {
       this.Controller = controller;
-      this.controllers = controller.getControllers();
+      this.controllers = controller.getRegisteredControllers();
     } else {
       this.controllers = controller;
     }
   }
 
-  addValidator(validator) {
+  setValidator(validator) {
     this.validators = validator.getValidators
       ? validator.getValidators()
       : validator;

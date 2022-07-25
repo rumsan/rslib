@@ -4,10 +4,11 @@ const AuthModel = require("./auth.model");
 const { ERR, throwError, checkCondition } = require("../../error");
 const { AUTH_ACTIONS } = require("../../constants");
 const {
-  saltAndHash,
-  hash,
-  generateJwtToken,
-} = require("@rumsan/core/utils/cryptoUtils");
+  CryptoUtils: { saltAndHash, hash },
+  DateUtils: { getUnixTimestamp },
+  WalletUtils: { generateDataToSign, getAddressFromSignature },
+} = require("@rumsan/core/utils");
+const { password } = require("../../../../play/env");
 
 /**
  * Any where you want to get user data after the function,
@@ -15,9 +16,11 @@ const {
  */
 
 module.exports = class extends AbstractController {
-  constructor(db, config) {
-    super(db, config);
-    this.table = this.tblAuths = db.models.tblAuths || new AuthModel(db).init();
+  constructor(options) {
+    const { db } = options;
+    super(options);
+    this.table = this.tblAuths =
+      db.models.tblAuths || new AuthModel({ db }).init();
   }
 
   registrations = {
@@ -31,6 +34,7 @@ module.exports = class extends AbstractController {
       this.remove(req.params.userId, req.payload.service),
     getOtpForService: (req) =>
       this.getOtpForService(req.payload.service, req.payload.serviceId),
+    getSignDataForWalletAuth: () => this.getSignDataForWalletAuth(),
   };
 
   manageUsingAction(userId, action, data) {
@@ -46,6 +50,7 @@ module.exports = class extends AbstractController {
   async getByServiceId(service, serviceId, errMsg) {
     let auth = await this.tblAuths.findOne({
       where: { service, serviceId },
+      attributes: { exclude: ["password"] },
     });
     if (!auth && errMsg) throwError(errMsg);
     return auth;
@@ -91,7 +96,33 @@ module.exports = class extends AbstractController {
     }
   }
 
-  async authenticateUsingPassword(email, password, callback) {
+  async getOtpForService(service, serviceId, validDurationInSeconds) {
+    validDurationInSeconds =
+      validDurationInSeconds || this.config.otpValidateDuration || 600;
+    let auth = await this.getByServiceId(
+      service,
+      serviceId,
+      `${serviceId} does not exist.`
+    );
+
+    const code = Math.floor(100000 + Math.random() * 900000);
+    const expireOn = getUnixTimestamp() + validDurationInSeconds;
+    auth.otp = { code, expireOn };
+    await auth.save();
+    auth = this.getResponse(auth);
+    this.emit("otp-created", code, auth);
+    return true;
+  }
+
+  async getSignDataForWalletAuth(validDurationInSeconds) {
+    validDurationInSeconds =
+      validDurationInSeconds || this.config.otpValidateDuration || 600;
+    return this.getResponse(
+      generateDataToSign(this.config.appSecret, validDurationInSeconds)
+    );
+  }
+
+  async authenticateUsingPassword(email, password) {
     checkCondition(email, "Must send email.");
     checkCondition(password, "Must send password.");
 
@@ -118,106 +149,39 @@ module.exports = class extends AbstractController {
         throw throwError(ERR.LOGIN_INVALID);
       }
 
-    return this._afterAuthenticate(auth.userId, callback);
-
-    // const cbData = await callback(auth.userId);
-    // checkCondition(cbData, "Must callback data with user and permissions.");
-
-    // checkCondition(
-    //   cbData.user,
-    //   "Must send user object in authenticate callback."
-    // );
-
-    // checkCondition(
-    //   cbData.user.id,
-    //   "Must send user.id in authenticate callback."
-    // );
-
-    // checkCondition(
-    //   cbData.permissions && Array.isArray(cbData.permissions),
-    //   "Must send permissions array in authenticate callback."
-    // );
-
-    // cbData.accessToken = generateJwtToken(
-    //   {
-    //     user: cbData.user,
-    //     permissions: cbData.permissions,
-    //     userId: cbData.user.id,
-    //   },
-    //   this.config.appSecret,
-    //   this.config.jwtDuration
-    // );
-
-    // return cbData;
+    return auth.userId;
   }
 
-  async _afterAuthenticate(userId, callback) {
-    checkCondition(callback, "Must send callback function.");
-    const cbData = await callback(userId);
-    checkCondition(cbData, "Must callback data with user and permissions.");
-
-    checkCondition(
-      cbData.user,
-      "Must send user object in authenticate callback."
-    );
-
-    checkCondition(
-      cbData.user.id,
-      "Must send user.id in authenticate callback."
-    );
-
-    checkCondition(
-      cbData.permissions && Array.isArray(cbData.permissions),
-      "Must send permissions array in authenticate callback."
-    );
-
-    cbData.accessToken = generateJwtToken(
-      {
-        user: cbData.user,
-        permissions: cbData.permissions,
-        userId: cbData.user.id,
-      },
-      this.config.appSecret,
-      this.config.jwtDuration
-    );
-
-    return cbData;
-  }
-
-  async getOtpForService(service, serviceId) {
+  async authenticateUsingOtp(service, serviceId, otp) {
     let auth = await this.getByServiceId(
       service,
       serviceId,
       `${serviceId} does not exist.`
     );
 
-    const code = Math.floor(100000 + Math.random() * 900000);
-    const expireOn = new Date(new Date().getTime() + 10 * 60000); //10 minutes later
-    auth.otp = { code, expireOn };
-    await auth.save();
-    auth = JSON.stringify(auth);
-    auth = JSON.parse(auth);
-    delete auth.password;
-    delete auth.createdAt;
-    delete auth.updatedAt;
-    this.emit("otp_created", code, auth);
-    return code;
+    checkCondition(auth.otp?.code, "Invalid OTP");
+    checkCondition(
+      auth.otp.code.toString() === otp.toString(),
+      "Invalid OTP sent"
+    );
+    checkCondition(auth.otp.expireOn > getUnixTimestamp(), "OTP has expired.");
+    return auth.userId;
   }
 
-  async authenticateUsingOtp(service, serviceId, otp, callback) {
-    let auth = await this.getByServiceId(
-      service,
-      serviceId,
-      `${serviceId} does not exist.`
+  async authenticateUsingWallet(signature, signPayload) {
+    const walletAddress = getAddressFromSignature(
+      signature,
+      signPayload,
+      this.config.appSecret
     );
 
-    checkCondition(auth.otp, "Invalid OTP");
-    checkCondition(auth.otp.code, "Invalid OTP");
-    checkCondition(auth.otp.code === otp, "Invalid OTP sent");
-    checkCondition(
-      new Date() < new Date(auth.otp.expireOn),
-      "OTP has expiread"
-    );
-    return this._afterAuthenticate(auth.userId, callback);
+    let auth = await this.tblAuths.findOne({
+      where: { service: "wallet", serviceId: walletAddress },
+      attributes: { exclude: ["password"] },
+    });
+
+    checkCondition(auth, "Wallet address does not exist.");
+
+    return auth.userId;
   }
 };

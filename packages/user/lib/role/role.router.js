@@ -3,10 +3,10 @@ let Validator = require("./role.validators");
 const Controller = require("./role.controllers");
 
 module.exports = class extends AbstractRouter {
-  constructor(db, name, config) {
-    super(db, name, config);
-    this.addController(new Controller(this.db, this.config));
-    this.addValidator(new Validator(this.config));
+  constructor(options) {
+    super(options);
+    this.setController(new Controller(options));
+    this.setValidator(new Validator(options));
   }
   routes = {
     add: {

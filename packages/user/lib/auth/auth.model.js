@@ -14,6 +14,7 @@ const schema = {
       AUTH_SERVICE.GOOGLE,
       AUTH_SERVICE.APPLE,
       AUTH_SERVICE.FACEBOOK,
+      AUTH_SERVICE.TWITTER,
       AUTH_SERVICE.GITHUB,
       AUTH_SERVICE.WALLET,
     ]),
@@ -76,7 +77,7 @@ module.exports = class UserModel extends AbstractModel {
       name: "unique_service",
     },
   ];
-  constructor(db) {
-    super(db, "tblAuths");
+  constructor({ db }) {
+    super({ db, tableName: "tblAuths" });
   }
 };

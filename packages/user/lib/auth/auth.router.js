@@ -3,10 +3,10 @@ let Validator = require("./auth.validators");
 const Controller = require("./auth.controllers");
 
 module.exports = class extends AbstractRouter {
-  constructor(db, name, config) {
-    super(db, name, config);
-    this.addController(new Controller(this.db, this.config));
-    this.addValidator(new Validator(this.config));
+  constructor(options) {
+    super(options);
+    this.setController(new Controller(options));
+    this.setValidator(new Validator(options));
   }
   routes = {
     authenticate: {
@@ -17,6 +17,11 @@ module.exports = class extends AbstractRouter {
     getOtpForService: {
       method: "POST",
       path: "/otp",
+      description: "Get OTP for user",
+    },
+    getSignDataForWalletAuth: {
+      method: "GET",
+      path: "/wallet",
       description: "Get OTP for user",
     },
     manageUsingAction: {

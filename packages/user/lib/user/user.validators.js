@@ -28,14 +28,18 @@ module.exports = class extends AbstractValidator {
     login: {
       payload: Joi.object({
         email: Joi.string()
-          .optional()
+          .required()
           .email()
           .example("test@test.com")
           .error(new Error("Invalid email.")),
-        password: Joi.string()
-          .required()
-          .example("$xample")
-          .error(new Error("Invalid password.")),
+        password: Joi.string().required(),
+      }),
+    },
+    loginUsingOtp: {
+      payload: Joi.object({
+        service: Joi.string().required().example("email"),
+        serviceId: Joi.string().required().example("test@rumsan.com"),
+        otp: Joi.string().required(),
       }),
     },
     remove: {
@@ -48,14 +52,8 @@ module.exports = class extends AbstractValidator {
         id: Joi.number(),
       }),
       payload: Joi.object({
-        name: Joi.string()
-          .required()
-          .example("Mr. Ram Singh")
-          .error(new Error("Invalid name.")),
-        gender: Joi.string()
-          .optional()
-          .example("U")
-          .error(new Error("Invalid gender.")),
+        name: Joi.string().required().example("Mr. Ram Singh"),
+        gender: Joi.string().optional().example("U"),
       }),
     },
     updateEmail: {

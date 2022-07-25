@@ -2,8 +2,12 @@ const ERR = {
   DEFAULT: ["Error Occured", "none", 500],
   APP_SECRET: ["AppSecret is undefined.", "app_secret", 500],
   APP_SECRET32: ["AppSecret must be 32 characters long.", "app_secret32", 500],
-  AUTH_EXISTS: ["User auth already exists.", "auth_exists", 400],
-  AUTH_NOEXISTS: ["User auth does not exist.", "auth_noexists", 401],
+  AUTH_EXISTS: [
+    "User authentication service already exists.",
+    "auth_exists",
+    400,
+  ],
+  AUTH_NOEXISTS: ["User does not exist.", "auth_noexists", 401],
   AUTH_REQ: [
     'Must send auth data. eg: {type:"email","username":"santosh@rumsan.com"}',
     "auth_req",

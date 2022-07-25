@@ -81,7 +81,7 @@ const sanitizeGender = (gender) => {
 
 module.exports = class UserModel extends AbstractModel {
   schema = schema;
-  constructor(db) {
-    super(db, "tblUsers");
+  constructor({ db }) {
+    super({ db, tableName: "tblUsers" });
   }
 };

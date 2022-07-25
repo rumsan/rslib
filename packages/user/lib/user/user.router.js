@@ -3,10 +3,10 @@ let Validator = require("./user.validators");
 const Controller = require("./user.controllers");
 
 module.exports = class extends AbstractRouter {
-  constructor(db, name, config) {
-    super(db, name, config);
-    this.addController(new Controller(this.db, this.config));
-    this.addValidator(new Validator(this.config));
+  constructor(options) {
+    super(options);
+    this.setController(new Controller(options));
+    this.setValidator(new Validator(options));
   }
   routes = {
     add: {
@@ -23,6 +23,11 @@ module.exports = class extends AbstractRouter {
       method: "POST",
       path: "/login",
       description: "Login using password",
+    },
+    loginUsingOtp: {
+      method: "POST",
+      path: "/login/otp",
+      description: "Login using OTP",
     },
     getById: {
       method: "GET",

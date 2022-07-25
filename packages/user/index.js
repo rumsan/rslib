@@ -3,7 +3,7 @@ const defaultConfigs = {
   appSecret: null,
   jwtDuration: 1200000,
   enablePasswordAuthentication: false, //enable authentication using password
-  autoApprove: false, //auto approves user after they are added
+  autoUserApprove: false, //auto approves user after they are added
 };
 
 module.exports = {
@@ -16,14 +16,14 @@ module.exports = {
   AuthModel: require("./lib/auth/auth.model"),
   RoleModel: require("./lib/role/role.model"),
   UserModel: require("./lib/user/user.model"),
-  Auth: require("./lib/auth"),
-  Role: require("./lib/role"),
-  User: require("./lib/user"),
+  AuthRouter: require("./lib/auth/auth.router"),
+  RoleRouter: require("./lib/role/role.router"),
+  UserRouter: require("./lib/user/user.router"),
 
   initModels(db, createAsociations) {
-    const _authModel = new this.AuthModel(db).init();
-    const _roleModel = new this.RoleModel(db).init();
-    const _userModel = new this.UserModel(db).init();
+    const _authModel = new this.AuthModel({ db }).init();
+    const _roleModel = new this.RoleModel({ db }).init();
+    const _userModel = new this.UserModel({ db }).init();
 
     _createAssociations({ _userModel, _authModel });
     if (createAsociations)
@@ -33,18 +33,6 @@ module.exports = {
       AuthModel: _authModel,
       RoleModel: _roleModel,
       UserModel: _userModel,
-    };
-  },
-
-  initControllers(db, config) {
-    config = {
-      ...defaultConfigs,
-      ...config,
-    };
-    return {
-      AuthController: new this.AuthController(db, config),
-      RoleController: new this.RoleController(db, config),
-      UserController: new this.UserController(db, config),
     };
   },
 };

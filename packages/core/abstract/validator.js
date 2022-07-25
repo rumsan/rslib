@@ -1,9 +1,9 @@
 module.exports = class AbstractValidator {
-  constructor(config) {
+  constructor(options) {
     if (this.constructor == AbstractValidator) {
       throw new Error("Abstract classes can't be instantiated.");
     }
-    this.config = config;
+    Object.assign(this, options);
   }
 
   validators = {};

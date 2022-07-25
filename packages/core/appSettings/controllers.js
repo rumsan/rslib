@@ -24,7 +24,7 @@ class Controller extends AbstractController {
   };
 
   constructor(db) {
-    super(db);
+    super({ db });
     this.table = SettingModel(db);
     delete this.db;
     delete this.config;

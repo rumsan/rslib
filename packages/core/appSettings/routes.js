@@ -3,9 +3,9 @@ let Validator = require("./validators");
 const Controller = require("./controllers");
 module.exports = class extends AbstractRouter {
   constructor(db, name) {
-    super(db, name);
-    this.addController(Controller(this.db));
-    this.addValidator(Validator());
+    super({ db, name });
+    this.setController(Controller(this.db));
+    this.setValidator(Validator());
   }
   routes = {
     listPublic: {
