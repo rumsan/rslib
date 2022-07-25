@@ -109,7 +109,6 @@ module.exports = class extends AbstractController {
     const expireOn = getUnixTimestamp() + validDurationInSeconds;
     auth.otp = { code, expireOn };
     await auth.save();
-    auth = this.getResponse(auth);
     this.emit("otp-created", code, auth);
     return true;
   }
@@ -117,9 +116,7 @@ module.exports = class extends AbstractController {
   async getSignDataForWalletAuth(validDurationInSeconds) {
     validDurationInSeconds =
       validDurationInSeconds || this.config.otpValidateDuration || 600;
-    return this.getResponse(
-      generateDataToSign(this.config.appSecret, validDurationInSeconds)
-    );
+    return generateDataToSign(this.config.appSecret, validDurationInSeconds);
   }
 
   async authenticateUsingPassword(email, password) {

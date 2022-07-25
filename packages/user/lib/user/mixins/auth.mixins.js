@@ -17,8 +17,11 @@ module.exports = {
     let permissions = await this.roleController.calculatePermissions(
       user.roles
     );
+    let data = this.setAccessTokenData({ user, permissions });
+    console.log(data);
     const accessToken = generateJwtToken(
-      this.setAccessTokenData({ user, permissions }),
+      data,
+      //this.setAccessTokenData({ user, permissions }),
       this.config.appSecret,
       this.config.jwtDuration
     );

@@ -1,6 +1,12 @@
 /**
  * config options
- * - returnDataType (raw or api)
+ * - responseType (raw or api)
+ *
+ * Options
+ * - db
+ * - config
+ * - mixins
+ * - listeners
  */
 var EventEmitter = require("events");
 module.exports = class AbstractController extends EventEmitter {
@@ -21,9 +27,10 @@ module.exports = class AbstractController extends EventEmitter {
 
   getResponse(data, type) {
     type = type || this.config.responseType;
-    if (type === "raw") return data;
+    if (!type) return data;
     data = JSON.stringify(data);
     data = JSON.parse(data);
+    if (type === "json") return data;
     if (type === "api") return { success: true, data };
     return data;
   }

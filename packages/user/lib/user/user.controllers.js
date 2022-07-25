@@ -118,6 +118,6 @@ module.exports = class extends AbstractController {
   async getById(id, showError = false) {
     let user = await this.tblUsers.findByPk(id);
     if (!user && showError) throwError(ERR.USER_NOEXISTS);
-    return this.getResponse(user);
+    return user;
   }
 };
