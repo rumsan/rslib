@@ -11,11 +11,12 @@
     "test:watch": "cross-env NODE_ENV=development jest --runInBand --detectOpenHandles --watch ./tests"
   },
   "dependencies": {
+    "@rumsan/core": "*",
     "joi": "^17.6.0",
+    "jsonwebtoken": "^8.5.1",
     "lzutf8": "^0.6.3",
     "pg": "^8.7.3",
     "pg-hstore": "^2.3.4",
-    "@rumsan/core": "*",
     "sequelize": "^6.21.0"
   },
   "devDependencies": {
