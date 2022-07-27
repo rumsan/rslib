@@ -8,7 +8,6 @@ const {
   DateUtils: { getUnixTimestamp },
   WalletUtils: { generateDataToSign, getAddressFromSignature },
 } = require("@rumsan/core/utils");
-const { password } = require("../../../../play/env");
 
 /**
  * Any where you want to get user data after the function,
