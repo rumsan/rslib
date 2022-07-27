@@ -52,7 +52,16 @@ const ERR = {
 };
 
 const { RSError } = require("@rumsan/core/utils");
+
 module.exports = {
+  ERRNI() {
+    throw new RSError(
+      "Not Implemented. Please overwrite this function.",
+      "not_implemented",
+      500,
+      "rs-user"
+    );
+  },
   ERR,
   throwError(err) {
     if (!err)

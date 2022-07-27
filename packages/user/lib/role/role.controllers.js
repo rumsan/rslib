@@ -36,8 +36,23 @@ module.exports = class extends AbstractController {
     return this.table.findOne({ where: { name } });
   }
 
-  list() {
+  list(excludeExpired = false) {
+    let where = {};
+    if (excludeExpired)
+      where = {
+        [Op.or]: [
+          {
+            expiryDate: null,
+          },
+          {
+            expiryDate: {
+              [Op.gt]: new Date(),
+            },
+          },
+        ],
+      };
     return this.table.findAll({
+      where,
       order: [["name", "ASC"]],
     });
   }
@@ -47,8 +62,10 @@ module.exports = class extends AbstractController {
     return role.permissions;
   }
 
-  async listValidRoles(filterRoles) {
+  async filterValidRoles(filterRoles) {
     let roles = stringToArray(filterRoles);
+    if (!roles.length) return [];
+
     let where = {
       [Op.or]: [
         {
@@ -61,21 +78,22 @@ module.exports = class extends AbstractController {
         },
       ],
     };
-    if (roles.length) where.name = roles;
+    where.name = roles;
     return this.table.findAll({
       where,
       order: [["name", "ASC"]],
     });
   }
 
-  async listValidRoleNames(filterRoles) {
-    let validRoles = await this.listValidRoles(filterRoles);
+  async filterValidRoleNames(filterRoles) {
+    let validRoles = await this.filterValidRoles(filterRoles);
     return validRoles.map((r) => r.name);
   }
 
   async calculatePermissions(roles) {
-    if (!roles) return [];
-    let validRoles = await this.listValidRoles(roles);
+    roles = stringToArray(roles);
+    if (!roles.length) return [];
+    let validRoles = await this.filterValidRoles(roles);
     let perms = [];
     validRoles.forEach((r) => {
       perms = [...new Set([...perms, ...r.permissions])];

@@ -6,6 +6,8 @@ module.exports = {
   ArrayUtils: require("./arrayUtils"),
   ObjectUtils: require("./objectUtils"),
   MathUtils: require("./mathUtils"),
+  SequelizeDB: require("./sequelizeDb"),
+  SecureRoute: require("./secureRoute"),
   WalletUtils: require("./walletUtils"),
   RSError: require("./rserror"),
 };

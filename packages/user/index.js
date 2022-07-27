@@ -7,6 +7,7 @@ const defaultConfigs = {
 };
 
 module.exports = {
+  RSU_PERMISSIONS: require("./constants").PERMISSIONS,
   AuthController: require("./lib/auth/auth.controllers"),
   RoleController: require("./lib/role/role.controllers"),
   UserController: require("./lib/user/user.controllers"),

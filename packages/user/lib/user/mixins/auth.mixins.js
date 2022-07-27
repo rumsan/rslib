@@ -17,11 +17,10 @@ module.exports = {
     let permissions = await this.roleController.calculatePermissions(
       user.roles
     );
-    let data = this.setAccessTokenData({ user, permissions });
-    console.log(data);
+    const accessTokenData = this.setAccessTokenData({ user, permissions });
+    console.log(accessTokenData);
     const accessToken = generateJwtToken(
-      data,
-      //this.setAccessTokenData({ user, permissions }),
+      accessTokenData,
       this.config.appSecret,
       this.config.jwtDuration
     );
@@ -31,7 +30,7 @@ module.exports = {
 
   async loginUsingPassword(email, password) {
     if (!this.config.enablePasswordAuthentication)
-      throw new Error(
+      throwError(
         "Cannot login using password when enablePasswordAuthentication is false"
       );
 

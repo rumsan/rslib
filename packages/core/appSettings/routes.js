@@ -17,6 +17,7 @@ module.exports = class extends AbstractRouter {
       method: "POST",
       path: "/{name}",
       description: "Update an app setting.",
+      permissions: ["app_manage"],
     },
     getPublic: {
       method: "GET",

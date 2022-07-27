@@ -25,16 +25,6 @@ module.exports = class AbstractController extends EventEmitter {
     if (this.listeners) this.addListeners(this.listeners);
   }
 
-  getResponse(data, type) {
-    type = type || this.config.responseType;
-    if (!type) return data;
-    data = JSON.stringify(data);
-    data = JSON.parse(data);
-    if (type === "json") return data;
-    if (type === "api") return { success: true, data };
-    return data;
-  }
-
   addMixins(mixins) {
     Object.assign(this, mixins);
   }

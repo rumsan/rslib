@@ -4,14 +4,14 @@ const AuthController = require("../auth/auth.controllers");
 const RoleController = require("../role/role.controllers");
 const { getUserMixins } = require("./mixins");
 
-const { ERR, throwError, checkCondition } = require("../../error");
+const { ERR, ERRNI, throwError, checkCondition } = require("../../error");
 
 const {
   TypeUtils: { convertToInteger, isUUID },
   ArrayUtils: { stringToArray },
 } = require("@rumsan/core/utils");
 
-module.exports = class extends AbstractController {
+class UserController extends AbstractController {
   registrations = {
     add: (req) => this.signupUsingEmail(req.payload),
     list: () => this.list(),
@@ -53,8 +53,17 @@ module.exports = class extends AbstractController {
 
   async _add(payload) {
     if (this.config.autoUserApprove) payload.isApproved = true;
-    payload.roles = await this.roleController.listValidRoleNames(payload.roles);
-    return this.tblUsers.create(payload);
+    payload.roles = await this.roleController.filterValidRoleNames(
+      payload.roles
+    );
+    let newUser = await this.tblUsers.create(payload);
+    if (this.config.enablePasswordAuthentication && payload.password)
+      await this.authController.addPassword(
+        payload.email,
+        payload.password,
+        newUser.id
+      );
+    return newUser;
   }
 
   approve(id) {
@@ -120,4 +129,35 @@ module.exports = class extends AbstractController {
     if (!user && showError) throwError(ERR.USER_NOEXISTS);
     return user;
   }
-};
+
+  //#region Mixins function signature for auto-complete
+
+  //auth.mixins
+  loginUsingPassword(email, password) {
+    ERRNI();
+  }
+  setAccessTokenData(data) {
+    ERRNI();
+  }
+  loginUsingOtp(service, serviceId, otp) {
+    ERRNI();
+  }
+  loginUsingWallet(signature, signPayload) {
+    ERRNI();
+  }
+  //role.mixins
+  addRoles(id, roles) {
+    ERRNI();
+  }
+  hasRole(id, role) {
+    ERRNI();
+  }
+  //signup.mixins
+  signupUsingEmail(payload) {
+    ERRNI();
+  }
+
+  //#endregion
+}
+
+module.exports = UserController;
