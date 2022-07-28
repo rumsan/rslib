@@ -5,6 +5,7 @@ module.exports = {
   TypeUtils: require("./typeUtils"),
   ArrayUtils: require("./arrayUtils"),
   ObjectUtils: require("./objectUtils"),
+  MailUtils: require("./mailUtils"),
   MathUtils: require("./mathUtils"),
   SequelizeDB: require("./sequelizeDb"),
   SecureRoute: require("./secureRoute"),

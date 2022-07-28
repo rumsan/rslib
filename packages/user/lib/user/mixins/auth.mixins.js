@@ -18,7 +18,6 @@ module.exports = {
       user.roles
     );
     const accessTokenData = this.setAccessTokenData({ user, permissions });
-    console.log(accessTokenData);
     const accessToken = generateJwtToken(
       accessTokenData,
       this.config.appSecret,
