@@ -57,14 +57,21 @@ class UserController extends AbstractController {
       payload.roles
     );
     let newUser = await this.tblUsers.create(payload);
-    if (this.config.enablePasswordAuthentication && payload.password)
-      await this.authController.addPassword(
-        payload.email,
-        payload.password,
-        newUser.id
-      );
-    //TODO remove hardcode "email"
-    else await this.authController.add(newUser.id, "email", payload.email);
+
+    //TODO remove "email" hardcoded
+    let auth = await this.authController.add({
+      userId: newUser.id,
+      service: "email",
+      serviceId: payload.email,
+    });
+    this.emit(
+      "user-added-otp",
+      auth.otp.code,
+      auth.service,
+      auth.serviceId,
+      auth
+    );
+    this.emit("user-added", newUser);
     return newUser;
   }
 
@@ -135,27 +142,27 @@ class UserController extends AbstractController {
   //#region Mixins function signature for auto-complete
 
   //auth.mixins
-  loginUsingPassword(email, password) {
+  async loginUsingPassword(email, password) {
     ERRNI();
   }
   setAccessTokenData(data) {
     ERRNI();
   }
-  loginUsingOtp(service, serviceId, otp) {
+  async loginUsingOtp(service, serviceId, otp) {
     ERRNI();
   }
-  loginUsingWallet(signature, signPayload) {
+  async loginUsingWallet(signature, signPayload) {
     ERRNI();
   }
   //role.mixins
-  addRoles(id, roles) {
+  async addRoles(id, roles) {
     ERRNI();
   }
-  hasRole(id, role) {
+  async hasRole(id, role) {
     ERRNI();
   }
   //signup.mixins
-  signupUsingEmail(payload) {
+  async signupUsingEmail(payload) {
     ERRNI();
   }
 

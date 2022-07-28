@@ -55,12 +55,16 @@ module.exports = class extends AbstractController {
     return auth;
   }
 
-  async add(userId, service, serviceId, details = {}) {
+  async add(payload, validDurationInSeconds) {
+    const { service, serviceId } = payload;
     let auth = await this.tblAuths.findOne({
       where: { service, serviceId },
     });
     if (auth) return auth;
-    return this.tblAuths.create({ userId, service, serviceId, details });
+    payload.otp = this._createOtp(validDurationInSeconds);
+    if (payload.password)
+      payload.password = await this._createPassword(payload.password);
+    return this.tblAuths.create(payload);
   }
 
   listUserAuthServices(userId) {
@@ -71,44 +75,44 @@ module.exports = class extends AbstractController {
     return this.tblAuths.destroy({ userId, service });
   }
 
-  async addPassword(email, password, userId) {
+  async addPassword(email, password) {
     checkCondition(email, "Must send email.");
     checkCondition(password, "Must send password.");
+
+    let auth = await this.getByServiceId("email", email);
+    checkCondition(auth, "User auth does not exists");
+    const { salt, hash } = await this._createPassword(password);
+
+    return this.tblAuths.update(
+      { password: { salt, hash } },
+      { where: { service: "email", serviceId: email } }
+    );
+  }
+
+  async _createPassword(password) {
     const saltHash = await saltAndHash(password);
     const salt = saltHash.salt.toString("base64");
     const hash = saltHash.hash.toString("base64");
+    return { salt, hash };
+  }
 
-    let auth = await this.getByServiceId("email", email);
-    if (auth) {
-      return this.tblAuths.update(
-        { password: { salt, hash } },
-        { where: { service: "email", serviceId: email } }
-      );
-    } else {
-      checkCondition(userId, "Must send userId.");
-      return this.tblAuths.create({
-        userId,
-        service: "email",
-        serviceId: email,
-        password: { salt, hash },
-      });
-    }
+  _createOtp(validDurationInSeconds) {
+    validDurationInSeconds =
+      validDurationInSeconds || this.config.otpValidateDuration || 600;
+    const code = Math.floor(100000 + Math.random() * 900000);
+    const expireOn = getUnixTimestamp() + validDurationInSeconds;
+    return { code, expireOn };
   }
 
   async getOtpForService(service, serviceId, validDurationInSeconds) {
-    validDurationInSeconds =
-      validDurationInSeconds || this.config.otpValidateDuration || 600;
     let auth = await this.getByServiceId(
       service,
       serviceId,
       `${serviceId} does not exist.`
     );
 
-    const code = Math.floor(100000 + Math.random() * 900000);
-    const expireOn = getUnixTimestamp() + validDurationInSeconds;
-    auth.otp = { code, expireOn };
-    await auth.save();
-    this.emit("otp-created", code, auth);
+    auth.otp = this._createOtp(validDurationInSeconds);
+    this.emit("otp-created", auth.otp.code, service, serviceId, auth);
     return true;
   }
 
