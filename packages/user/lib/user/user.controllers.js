@@ -67,9 +67,9 @@ class UserController extends AbstractController {
     this.emit(
       "user-added-otp",
       auth.otp.code,
-      auth.service,
       auth.serviceId,
-      auth
+      newUser,
+      auth.service
     );
     this.emit("user-added", newUser);
     return newUser;

@@ -1,5 +1,6 @@
 module.exports = {
   CryptoUtils: require("./cryptoUtils"),
+  DataUtils: require("./dataUtils"),
   DateUtils: require("./dateUtils"),
   NameParser: require("./nameParser"),
   TypeUtils: require("./typeUtils"),
