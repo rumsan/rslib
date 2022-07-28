@@ -63,6 +63,8 @@ class UserController extends AbstractController {
         payload.password,
         newUser.id
       );
+    //TODO remove hardcode "email"
+    else await this.authController.add(newUser.id, "email", payload.email);
     return newUser;
   }
 
