@@ -18,10 +18,12 @@ module.exports = {
     return true;
   },
 
-  isJsonObject(str) {
+  isJsonObject(str, isAlreadyString = false) {
     try {
       if (Array.isArray(str)) return false;
-      var json = JSON.parse(JSON.stringify(str));
+      var json = isAlreadyString
+        ? JSON.parse(str)
+        : JSON.parse(JSON.stringify(str));
       return typeof json === "object";
     } catch (e) {
       return false;

@@ -2,8 +2,8 @@ const fs = require("fs");
 const path = require("path");
 var EventEmitter = require("events");
 
-const { loadNodeModule } = require("./core");
-class MailUtil extends EventEmitter {
+const { loadNodeModule } = require("../utils/core");
+class MailService extends EventEmitter {
   constructor(options) {
     super();
     if (options) {
@@ -71,4 +71,4 @@ class MailUtil extends EventEmitter {
   }
 }
 
-module.exports = new MailUtil();
+module.exports = new MailService();
