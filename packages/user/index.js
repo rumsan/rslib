@@ -21,10 +21,10 @@ module.exports = {
   RoleRouter: require("./lib/role/role.router"),
   UserRouter: require("./lib/user/user.router"),
 
-  initModels(db, createAsociations) {
-    const _authModel = new this.AuthModel({ db }).init();
-    const _roleModel = new this.RoleModel({ db }).init();
-    const _userModel = new this.UserModel({ db }).init();
+  initModels(createAsociations) {
+    const _authModel = new this.AuthModel().init();
+    const _roleModel = new this.RoleModel().init();
+    const _userModel = new this.UserModel().init();
 
     _createAssociations({ _userModel, _authModel });
     if (createAsociations)

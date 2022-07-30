@@ -77,7 +77,7 @@ module.exports = class UserModel extends AbstractModel {
       name: "unique_service",
     },
   ];
-  constructor({ db }) {
-    super({ db, tableName: "tblAuths" });
+  constructor() {
+    super({ tableName: "tblAuths" });
   }
 };

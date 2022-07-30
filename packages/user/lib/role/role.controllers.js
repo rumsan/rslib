@@ -21,10 +21,9 @@ module.exports = class extends AbstractController {
   };
 
   constructor(options) {
-    const { db } = options;
     super(options);
     this.table = this.tblRoles =
-      db.models.tblRoles || new RoleModel({ db }).init();
+      this.db.models.tblRoles || new RoleModel().init();
   }
 
   getById(id) {

@@ -16,10 +16,9 @@ const {
 
 module.exports = class extends AbstractController {
   constructor(options) {
-    const { db } = options;
     super(options);
     this.table = this.tblAuths =
-      db.models.tblAuths || new AuthModel({ db }).init();
+      this.db.models.tblAuths || new AuthModel().init();
   }
 
   registrations = {

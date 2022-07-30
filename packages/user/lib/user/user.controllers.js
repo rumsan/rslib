@@ -39,16 +39,16 @@ class UserController extends AbstractController {
    * - ERR: Custom error message package
    */
   constructor(options) {
-    const { db, config } = options;
+    const { config } = options;
     options.mixins = Object.assign(getUserMixins(), options.mixins);
     super(options);
 
     this.table = this.tblUsers =
-      db.models.tblUsers || new UserModel({ db }).init();
+      this.db.models.tblUsers || new UserModel().init();
     this.authController =
-      options.AuthController || new AuthController({ db, config });
+      options.AuthController || new AuthController({ config });
     this.roleController =
-      options.RoleController || new RoleController({ db, config });
+      options.RoleController || new RoleController({ db: this.db, config });
   }
 
   async _add(payload) {

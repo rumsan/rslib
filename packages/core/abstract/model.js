@@ -1,5 +1,8 @@
+const SequelizeDB = require("../utils/sequelizeDb");
+
 module.exports = class AbstractModel {
   constructor(options) {
+    this.db = SequelizeDB.db;
     if (this.constructor == AbstractModel) {
       throw new Error("Abstract classes can't be instantiated.");
     }

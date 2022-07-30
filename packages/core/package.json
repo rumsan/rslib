@@ -4,5 +4,8 @@
   "description": "Rumsan core libraries",
   "main": "index.js",
   "author": "Rumsan Group",
-  "homepage": "https://github.com/rumsan/rslib"
+  "homepage": "https://github.com/rumsan/rslib",
+  "dependencies": {
+    "sequelize": "^6.21.3"
+  }
 }

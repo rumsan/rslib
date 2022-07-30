@@ -1,9 +1,12 @@
+const { SequelizeDB } = require("../utils");
+
 module.exports = class AbstractRouter {
   routes = {};
   constructor(options) {
     if (this.constructor == AbstractRouter) {
       throw new Error("Abstract classes can't be instantiated.");
     }
+    this.db = SequelizeDB.db;
     Object.assign(this, options);
     if (!this.name) throw new Error("AbstractRouter: Must send route name.");
     if (!this.db)

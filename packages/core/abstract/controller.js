@@ -9,10 +9,12 @@
  * - listeners
  */
 var EventEmitter = require("events");
+const { SequelizeDB } = require("../utils");
 module.exports = class AbstractController extends EventEmitter {
   registrations = {};
   constructor(options) {
     super();
+    this.db = SequelizeDB.db;
     if (this.constructor == AbstractController) {
       throw new Error("Abstract classes can't be instantiated.");
     }
