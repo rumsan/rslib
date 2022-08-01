@@ -4,7 +4,8 @@ const Controller = require("./auth.controllers");
 const { PERMISSIONS } = require("../../constants");
 
 module.exports = class extends AbstractRouter {
-  constructor(options) {
+  constructor(options = {}) {
+    options.name = options.name || "auth";
     super(options);
     this.setController(new Controller(options));
     this.setValidator(new Validator(options));

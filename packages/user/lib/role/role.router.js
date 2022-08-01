@@ -4,7 +4,8 @@ const Controller = require("./role.controllers");
 const { PERMISSIONS } = require("../../constants");
 
 module.exports = class extends AbstractRouter {
-  constructor(options) {
+  constructor(options = {}) {
+    options.name = options.name || "roles";
     super(options);
     this.setController(new Controller(options));
     this.setValidator(new Validator(options));

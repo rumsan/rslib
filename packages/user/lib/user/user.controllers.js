@@ -2,7 +2,7 @@ const AbstractController = require("@rumsan/core/abstract/controller");
 const UserModel = require("./user.model");
 const AuthController = require("../auth/auth.controllers");
 const RoleController = require("../role/role.controllers");
-const Config = require("../../config");
+const { RSConfig } = require("@rumsan/core");
 const { getUserMixins } = require("./mixins");
 
 const { ERR, ERRNI, throwError, checkCondition } = require("../../error");
@@ -51,7 +51,7 @@ class UserController extends AbstractController {
   }
 
   async _add(payload) {
-    if (Config.autoUserApprove) payload.isApproved = true;
+    if (RSConfig.get("autoUserApprove")) payload.isApproved = true;
     payload.roles = await this.roleController.filterValidRoleNames(
       payload.roles
     );
@@ -80,7 +80,6 @@ class UserController extends AbstractController {
   }
 
   list() {
-    console.log(Config.autoUserApprove);
     //TODO: enable search filter
     return this.tblUsers.findAll({
       order: [["first", "ASC"]],

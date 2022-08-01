@@ -1,10 +1,12 @@
 let AbstractRouter = require("../abstract/router");
 let Validator = require("./validators");
-const Controller = require("./controllers");
+const Controller = require("./controller");
 module.exports = class extends AbstractRouter {
-  constructor(db, name) {
-    super({ db, name });
-    this.setController(Controller(this.db));
+  constructor(options) {
+    super(options);
+    const controller = Controller();
+    if (options.listeners) controller.addListeners(options.listeners);
+    this.setController(controller);
     this.setValidator(Validator());
   }
   routes = {

@@ -23,10 +23,9 @@ class Controller extends AbstractController {
     listPublic: () => this.listPublic(),
   };
 
-  constructor(db) {
-    super({ db });
-    this.table = SettingModel(db);
-    delete this.db;
+  constructor() {
+    super();
+    this.table = SettingModel();
   }
 
   //IMPORTANT: function beginning with _. Call internally only
@@ -141,6 +140,14 @@ class Controller extends AbstractController {
         throw new Error(
           `Must send all required fields [${setting.requiredFields.join(",")}]`
         );
+
+      //filter only required fields
+      value = Object.keys(value)
+        .filter((key) => setting.requiredFields.includes(key))
+        .reduce((obj, key) => {
+          obj[key] = value[key];
+          return obj;
+        }, {});
     }
 
     setting.value = { data: value };
@@ -150,6 +157,4 @@ class Controller extends AbstractController {
   }
 }
 
-module.exports = (db) => {
-  return new Controller(db);
-};
+module.exports = () => new Controller();

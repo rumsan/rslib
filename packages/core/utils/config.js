@@ -1,5 +1,5 @@
 const defaultConfigs = {
-  isDevEnvironment: false,
+  isDevEnvironment: process.env.ENV_TYPE === "development",
   appSecret: null,
   jwtDuration: 1200000,
   otpValidateDuration: 600,
@@ -7,14 +7,21 @@ const defaultConfigs = {
   autoUserApprove: false, //auto approves user after they are added
 };
 
-class UserConfig {
+class Config {
   constructor() {
     Object.assign(this, defaultConfigs);
   }
-  setConfig(config = {}) {
-    if (!config.appSecret) throw new Error("Must send appSecret.");
+
+  set(config = {}) {
+    //if (!config.appSecret) throw new Error("Must send appSecret.");
     Object.assign(this, config);
+  }
+
+  get(name) {
+    if (this[name] === undefined)
+      throw new Error(`Config [${name}] is not defined.`);
+    return this[name];
   }
 }
 
-module.exports = new UserConfig();
+module.exports = new Config();

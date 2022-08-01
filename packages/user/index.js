@@ -1,11 +1,6 @@
-const RSU_Config = require("./config");
 const { EVENTS, PERMISSIONS } = require("./constants");
 
 module.exports = {
-  RSU_Config,
-  setRSUConfig(config) {
-    RSU_Config.setConfig(config);
-  },
   RSU_EVENTS: EVENTS,
   RSU_PERMISSIONS: PERMISSIONS,
   AuthController: require("./lib/auth/auth.controllers"),

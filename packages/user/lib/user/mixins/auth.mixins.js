@@ -3,7 +3,7 @@ const {
 } = require("@rumsan/core/utils");
 const { getAddressFromSignature } = require("@rumsan/core/utils/walletUtils");
 const { throwError, ERR } = require("../../../error");
-const Config = require("../../../config");
+const { RSConfig } = require("@rumsan/core");
 
 module.exports = {
   setAccessTokenData(data) {
@@ -21,17 +21,17 @@ module.exports = {
     const accessTokenData = this.setAccessTokenData({ user, permissions });
     const accessToken = generateJwtToken(
       accessTokenData,
-      Config.appSecret,
-      Config.jwtDuration
+      RSConfig.get("appSecret"),
+      RSConfig.get("jwtDuration")
     );
     this.emit("login-success", accessToken, user, permissions);
     return { accessToken, user, permissions };
   },
 
   async loginUsingPassword(email, password) {
-    if (!Config.enablePasswordAuthentication)
+    if (!RSConfig.get("enablePasswordAuthentication"))
       throwError(
-        "Cannot login using password when enablePasswordAuthentication is false"
+        "Password-based authentication has been disabled for this application."
       );
 
     const userId = await this.authController.authenticateUsingPassword(
