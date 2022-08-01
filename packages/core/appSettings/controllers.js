@@ -27,7 +27,6 @@ class Controller extends AbstractController {
     super({ db });
     this.table = SettingModel(db);
     delete this.db;
-    delete this.config;
   }
 
   //IMPORTANT: function beginning with _. Call internally only

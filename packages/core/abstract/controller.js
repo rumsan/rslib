@@ -1,10 +1,8 @@
 /**
- * config options
  * - responseType (raw or api)
  *
  * Options
  * - db
- * - config
  * - mixins
  * - listeners
  */

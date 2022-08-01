@@ -1,9 +1,10 @@
 const { throwError, ERR, checkCondition } = require("../../../error");
+const Config = require("../../../config");
 
 module.exports = {
   async signupUsingEmail(payload) {
     checkCondition(payload.email, "Must send email.");
-    if (this.config.enablePasswordAuthentication && !payload.password)
+    if (Config.enablePasswordAuthentication && !payload.password)
       throwError(
         "Must send password when enablePasswordAuthentication is true"
       );

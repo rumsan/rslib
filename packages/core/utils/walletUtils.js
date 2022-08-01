@@ -8,15 +8,23 @@ const loadEthers = () => {
 };
 
 module.exports = {
-  generateDataToSign(secret, validDurationInSeconds = 600) {
+  generateDataToSign(
+    data,
+    secret,
+    { validDurationInSeconds = 600, useRandom = false }
+  ) {
     if (!secret)
       throw new Error(
         "WalletUtils: Must send secret in to generate toSign payload"
       );
-    const data = {
-      random: randomNumber(6),
-      expireOn: getUnixTimestamp() + validDurationInSeconds,
-    };
+
+    data = Object.assign(
+      {
+        random: randomNumber(6),
+        expireOn: getUnixTimestamp() + validDurationInSeconds,
+      },
+      data
+    );
     return encrypt(JSON.stringify(data), secret);
   },
 

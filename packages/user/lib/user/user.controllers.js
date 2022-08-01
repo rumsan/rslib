@@ -2,6 +2,7 @@ const AbstractController = require("@rumsan/core/abstract/controller");
 const UserModel = require("./user.model");
 const AuthController = require("../auth/auth.controllers");
 const RoleController = require("../role/role.controllers");
+const Config = require("../../config");
 const { getUserMixins } = require("./mixins");
 
 const { ERR, ERRNI, throwError, checkCondition } = require("../../error");
@@ -38,21 +39,18 @@ class UserController extends AbstractController {
    * - enablePasswordAuthentication: must send password  while signing up
    * - ERR: Custom error message package
    */
-  constructor(options) {
-    const { config } = options;
+  constructor(options = {}) {
     options.mixins = Object.assign(getUserMixins(), options.mixins);
     super(options);
 
     this.table = this.tblUsers =
       this.db.models.tblUsers || new UserModel().init();
-    this.authController =
-      options.AuthController || new AuthController({ config });
-    this.roleController =
-      options.RoleController || new RoleController({ db: this.db, config });
+    this.authController = options.AuthController || new AuthController();
+    this.roleController = options.RoleController || new RoleController();
   }
 
   async _add(payload) {
-    if (this.config.autoUserApprove) payload.isApproved = true;
+    if (Config.autoUserApprove) payload.isApproved = true;
     payload.roles = await this.roleController.filterValidRoleNames(
       payload.roles
     );
@@ -63,6 +61,7 @@ class UserController extends AbstractController {
       userId: newUser.id,
       service: "email",
       serviceId: payload.email,
+      password: payload.password,
     });
     this.emit(
       "user-added-otp",
@@ -80,6 +79,7 @@ class UserController extends AbstractController {
   }
 
   list() {
+    console.log(Config.autoUserApprove);
     //TODO: enable search filter
     return this.tblUsers.findAll({
       order: [["first", "ASC"]],

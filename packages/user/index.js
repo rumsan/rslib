@@ -1,12 +1,10 @@
-const defaultConfigs = {
-  isDevEnv: false,
-  appSecret: null,
-  jwtDuration: 1200000,
-  enablePasswordAuthentication: false, //enable authentication using password
-  autoUserApprove: false, //auto approves user after they are added
-};
+const RSU_Config = require("./config");
 
 module.exports = {
+  RSU_Config,
+  setRSUConfig(config) {
+    RSU_Config.setConfig(config);
+  },
   RSU_PERMISSIONS: require("./constants").PERMISSIONS,
   AuthController: require("./lib/auth/auth.controllers"),
   RoleController: require("./lib/role/role.controllers"),

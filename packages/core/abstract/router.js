@@ -13,10 +13,6 @@ module.exports = class AbstractRouter {
       throw new Error(
         "AbstractRouter: Must send valid sequelize db reference."
       );
-    // this.name = name;
-    // this.db = db;
-    // this.config = config;
-    // this.listeners = listeners;
   }
 
   setController(controller) {
