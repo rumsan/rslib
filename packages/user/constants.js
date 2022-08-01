@@ -24,4 +24,8 @@ module.exports = {
     ROLE_DELETE: "role_delete",
     ROLE_MANAGE: "role_manage",
   },
+  EVENTS: {
+    USER_ADD: "user-add",
+    USER_ADD_OTP: "user-add-otp",
+  },
 };

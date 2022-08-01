@@ -6,6 +6,7 @@ const Config = require("../../config");
 const { getUserMixins } = require("./mixins");
 
 const { ERR, ERRNI, throwError, checkCondition } = require("../../error");
+const { EVENTS } = require("../../constants");
 
 const {
   TypeUtils: { convertToInteger, isUUID },
@@ -64,13 +65,13 @@ class UserController extends AbstractController {
       password: payload.password,
     });
     this.emit(
-      "user-added-otp",
+      EVENTS.USER_ADD_OTP,
       auth.otp.code,
       auth.serviceId,
       newUser,
       auth.service
     );
-    this.emit("user-added", newUser);
+    this.emit(EVENTS.USER_ADD, newUser);
     return newUser;
   }
 
