@@ -5,9 +5,9 @@ const { PERMISSIONS } = require("../../constants");
 module.exports = class extends AbstractRouter {
   constructor(options = {}) {
     options.name = options.name || "users";
+    options.controller = options.controller || new Controller(options);
+    options.validator = options.validator || new Validator(options);
     super(options);
-    this.setController(new Controller(options));
-    this.setValidator(new Validator(options));
   }
   routes = {
     add: {

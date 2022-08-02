@@ -2,12 +2,11 @@ let AbstractRouter = require("../abstract/router");
 let Validator = require("./validators");
 const Controller = require("./controller");
 module.exports = class extends AbstractRouter {
-  constructor(options) {
+  constructor(options = {}) {
+    options.controller = Controller();
+    if (options.listeners) options.controller.addListeners(options.listeners);
+    options.validator = Validator();
     super(options);
-    const controller = Controller();
-    if (options.listeners) controller.addListeners(options.listeners);
-    this.setController(controller);
-    this.setValidator(Validator());
   }
   routes = {
     listPublic: {
