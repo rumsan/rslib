@@ -9,12 +9,10 @@ module.exports = class AbstractRouter {
       throw new Error("Abstract classes can't be instantiated.");
     }
     if (!options.name) throw new Error("AbstractRouter: Must send route name.");
-    if (!options.controller)
-      throw new Error("AbstractRouter: Must send controller.");
 
     this.name = options.name;
 
-    this.setController(options.controller);
+    if (options.controller) this.setController(options.controller);
     if (options.validator) this.setValidator(options.validator);
     //if (options.routes) this.addRoutes(options.routes);
   }
@@ -42,6 +40,8 @@ module.exports = class AbstractRouter {
   }
 
   register(app) {
+    if (!this._controllers)
+      throw new Error("Must send a controller to the router.");
     app.register({
       name: this.name,
       routes: this.routes,
