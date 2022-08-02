@@ -1,20 +1,16 @@
-const Controller = require("./controllers");
+const Controller = require("./controller");
 const Router = require("./routes");
 const Model = require("./model");
 
 class AppSettings {
-  async init(db) {
-    this.controller = Controller(db);
-    Model(db);
+  //Router = Router;
+  async init() {
+    this.controller = Controller();
     await this.refresh();
   }
 
   async refresh() {
     this.settings = await this.controller._list();
-  }
-
-  getRouter(db, name) {
-    return new Router(db, name);
   }
 
   get(name) {
@@ -26,4 +22,16 @@ class AppSettings {
   }
 }
 
-module.exports = new AppSettings();
+const insAppSettings = new AppSettings();
+insAppSettings.Router = (options = {}) => {
+  options.name = options.name || "settings";
+  options.listeners = options.listeners || {
+    update: () => {
+      insAppSettings.refresh();
+      console.log("settings updated...");
+    },
+  };
+  return new Router(options);
+};
+
+module.exports = insAppSettings;

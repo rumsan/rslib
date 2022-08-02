@@ -1,6 +1,7 @@
 const { loadNodeModule } = require("../utils/core");
+const SequelizeDB = require("../utils/sequelizeDb");
 
-module.exports = (db) => {
+module.exports = () => {
   loadNodeModule("pg");
   loadNodeModule("pg-hstore");
   const { DataTypes } = loadNodeModule("sequelize");
@@ -36,7 +37,7 @@ module.exports = (db) => {
     },
   };
 
-  return db.define("tblAppSettings", schema, {
+  return SequelizeDB.db.define("tblAppSettings", schema, {
     timestamps: true,
     freezeTableName: true,
   });

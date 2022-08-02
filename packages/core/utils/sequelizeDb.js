@@ -2,9 +2,8 @@ const { loadNodeModule } = require("./core");
 
 class SequelizeDB {
   constructor() {}
-  init(dbConfig) {
-    const { database, username, password, host, dialect, logging, pool } =
-      dbConfig;
+  init(database, username, password, options) {
+    const { host, dialect, logging, pool } = options;
     const { Sequelize, DataTypes } = loadNodeModule("sequelize");
     this.Sequelize = Sequelize;
     this.DataTypes = DataTypes;

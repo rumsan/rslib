@@ -2,34 +2,31 @@ const { SequelizeDB } = require("../utils");
 
 module.exports = class AbstractRouter {
   routes = {};
+  _controllers = null;
+  _validators = null;
   constructor(options) {
     if (this.constructor == AbstractRouter) {
       throw new Error("Abstract classes can't be instantiated.");
     }
-    this.db = SequelizeDB.db;
-    Object.assign(this, options);
-    if (!this.name) throw new Error("AbstractRouter: Must send route name.");
-    if (!this.db)
-      throw new Error(
-        "AbstractRouter: Must send valid sequelize db reference."
-      );
-    // this.name = name;
-    // this.db = db;
-    // this.config = config;
-    // this.listeners = listeners;
+    if (!options.name) throw new Error("AbstractRouter: Must send route name.");
+
+    this.name = options.name;
+
+    if (options.controller) this.setController(options.controller);
+    if (options.validator) this.setValidator(options.validator);
+    //if (options.routes) this.addRoutes(options.routes);
   }
 
   setController(controller) {
-    if (controller.getRegisteredControllers) {
-      this.Controller = controller;
-      this.controllers = controller.getRegisteredControllers();
-    } else {
-      this.controllers = controller;
-    }
+    if (!controller?.getRegisteredControllers)
+      throw new Error(
+        "Controller must have getRegisteredControllers function."
+      );
+    this._controllers = controller;
   }
 
   setValidator(validator) {
-    this.validators = validator.getValidators
+    this._validators = validator.getValidators
       ? validator.getValidators()
       : validator;
   }
@@ -43,11 +40,13 @@ module.exports = class AbstractRouter {
   }
 
   register(app) {
+    if (!this._controllers)
+      throw new Error("Must send a controller to the router.");
     app.register({
       name: this.name,
       routes: this.routes,
-      validators: this.validators,
-      controllers: this.controllers,
+      validators: this._validators,
+      controllers: this._controllers.getRegisteredControllers(),
     });
   }
 };

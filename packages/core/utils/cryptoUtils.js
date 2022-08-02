@@ -13,9 +13,9 @@ const HASH_ITERATIONS = 1000; // Number of pbkdf2 iterations
 const IV_LENGTH = 16; // For AES, this is always 16
 
 const CryptoUtils = {
-  generateJwtToken(data, secret, jwtDuration = 1200000) {
+  generateJwtToken(data, secret, jwtDuration = "1h") {
     if (!secret)
-      throw new Error("Must send 32 characters long appSecret config.");
+      throw new Error("Must send 32 characters long app secret config.");
     const JWT = loadNodeModule("jsonwebtoken");
     var LZUTF8 = loadNodeModule("lzutf8");
     let tokenData = LZUTF8.compress(JSON.stringify(data), {

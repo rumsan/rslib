@@ -20,7 +20,7 @@ module.exports = class extends AbstractController {
       this.removePermissions(req.params.name, req.payload),
   };
 
-  constructor(options) {
+  constructor(options = {}) {
     super(options);
     this.table = this.tblRoles =
       this.db.models.tblRoles || new RoleModel().init();

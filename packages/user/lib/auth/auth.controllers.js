@@ -1,5 +1,6 @@
 const AbstractController = require("@rumsan/core/abstract/controller");
 const AuthModel = require("./auth.model");
+const { RSConfig } = require("@rumsan/core");
 
 const { ERR, throwError, checkCondition } = require("../../error");
 const { AUTH_ACTIONS } = require("../../constants");
@@ -15,7 +16,7 @@ const {
  */
 
 module.exports = class extends AbstractController {
-  constructor(options) {
+  constructor(options = {}) {
     super(options);
     this.table = this.tblAuths =
       this.db.models.tblAuths || new AuthModel().init();
@@ -97,7 +98,7 @@ module.exports = class extends AbstractController {
 
   _createOtp(validDurationInSeconds) {
     validDurationInSeconds =
-      validDurationInSeconds || this.config.otpValidateDuration || 600;
+      validDurationInSeconds || RSConfig.get("otpValidateDuration") || 600;
     const code = Math.floor(100000 + Math.random() * 900000);
     const expireOn = getUnixTimestamp() + validDurationInSeconds;
     return { code, expireOn };
@@ -117,8 +118,8 @@ module.exports = class extends AbstractController {
 
   async getSignDataForWalletAuth(validDurationInSeconds) {
     validDurationInSeconds =
-      validDurationInSeconds || this.config.otpValidateDuration || 600;
-    return generateDataToSign(this.config.appSecret, validDurationInSeconds);
+      validDurationInSeconds || RSConfig.get("otpValidateDuration") || 600;
+    return generateDataToSign(RSConfig.get("secret"), validDurationInSeconds);
   }
 
   async authenticateUsingPassword(email, password) {
@@ -130,7 +131,7 @@ module.exports = class extends AbstractController {
     });
 
     if (!auth) {
-      if (this.config.isDevEnv) {
+      if (RSConfig.get("isDevEnvironment")) {
         throw throwError(ERR.AUTH_NOEXISTS);
       } else {
         throw throwError(ERR.LOGIN_INVALID);
@@ -142,7 +143,7 @@ module.exports = class extends AbstractController {
     );
 
     if (auth.password.hash !== hashedPwd.hash.toString("base64"))
-      if (this.config.isDevEnv) {
+      if (RSConfig.get("isDevEnvironment")) {
         throw throwError(ERR.PWD_NOTMATCH);
       } else {
         throw throwError(ERR.LOGIN_INVALID);
@@ -171,7 +172,7 @@ module.exports = class extends AbstractController {
     const walletAddress = getAddressFromSignature(
       signature,
       signPayload,
-      this.config.appSecret
+      RSConfig.get("appSecret")
     );
 
     let auth = await this.tblAuths.findOne({

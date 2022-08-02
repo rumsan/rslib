@@ -2,9 +2,11 @@ const AbstractController = require("@rumsan/core/abstract/controller");
 const UserModel = require("./user.model");
 const AuthController = require("../auth/auth.controllers");
 const RoleController = require("../role/role.controllers");
+const { RSConfig } = require("@rumsan/core");
 const { getUserMixins } = require("./mixins");
 
 const { ERR, ERRNI, throwError, checkCondition } = require("../../error");
+const { EVENTS } = require("../../constants");
 
 const {
   TypeUtils: { convertToInteger, isUUID },
@@ -38,21 +40,18 @@ class UserController extends AbstractController {
    * - enablePasswordAuthentication: must send password  while signing up
    * - ERR: Custom error message package
    */
-  constructor(options) {
-    const { config } = options;
+  constructor(options = {}) {
     options.mixins = Object.assign(getUserMixins(), options.mixins);
     super(options);
 
     this.table = this.tblUsers =
       this.db.models.tblUsers || new UserModel().init();
-    this.authController =
-      options.AuthController || new AuthController({ config });
-    this.roleController =
-      options.RoleController || new RoleController({ db: this.db, config });
+    this.authController = options.AuthController || new AuthController();
+    this.roleController = options.RoleController || new RoleController();
   }
 
   async _add(payload) {
-    if (this.config.autoUserApprove) payload.isApproved = true;
+    if (RSConfig.get("autoUserApprove")) payload.isApproved = true;
     payload.roles = await this.roleController.filterValidRoleNames(
       payload.roles
     );
@@ -63,15 +62,16 @@ class UserController extends AbstractController {
       userId: newUser.id,
       service: "email",
       serviceId: payload.email,
+      password: payload.password,
     });
     this.emit(
-      "user-added-otp",
+      EVENTS.USER_ADD_OTP,
       auth.otp.code,
       auth.serviceId,
       newUser,
       auth.service
     );
-    this.emit("user-added", newUser);
+    this.emit(EVENTS.USER_ADD, newUser);
     return newUser;
   }
 

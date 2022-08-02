@@ -1,13 +1,8 @@
-const defaultConfigs = {
-  isDevEnv: false,
-  appSecret: null,
-  jwtDuration: 1200000,
-  enablePasswordAuthentication: false, //enable authentication using password
-  autoUserApprove: false, //auto approves user after they are added
-};
+const { EVENTS, PERMISSIONS } = require("./constants");
 
 module.exports = {
-  RSU_PERMISSIONS: require("./constants").PERMISSIONS,
+  RSU_EVENTS: EVENTS,
+  RSU_PERMISSIONS: PERMISSIONS,
   AuthController: require("./lib/auth/auth.controllers"),
   RoleController: require("./lib/role/role.controllers"),
   UserController: require("./lib/user/user.controllers"),
