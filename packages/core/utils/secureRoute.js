@@ -14,6 +14,10 @@ module.exports = (appSecret, routePermissions, request) => {
 
   try {
     const t = validateJwtToken(token, appSecret);
+    if (t.ip) {
+      if (request.info.clientIpAddress !== t.ip)
+        throw new Error("Invalid Token.");
+    }
     request.currentUser = t.user;
     request.currentUserId = t.userId;
     request.currentUserPermissions = t.permissions;

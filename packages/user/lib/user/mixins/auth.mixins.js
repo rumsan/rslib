@@ -8,17 +8,23 @@ const { RSConfig } = require("@rumsan/core");
 module.exports = {
   setAccessTokenData(data) {
     return {
-      user: { id: data.user.id, name: data.user.name },
+      user: { name: data.user.name },
       permissions: data.permissions,
     };
   },
 
-  async loginSuccess(userId) {
+  async loginSuccess(userId, clientIpAddress) {
     let user = await this.getById(userId);
     let permissions = await this.roleController.calculatePermissions(
       user.roles
     );
-    const accessTokenData = this.setAccessTokenData({ user, permissions });
+    let accessTokenData = this.setAccessTokenData({ user, permissions });
+    if (!accessTokenData.user)
+      throw new Error("Must send user to object to access token data.");
+    accessTokenData.userId = user.id;
+    accessTokenData.ip = clientIpAddress;
+    if (!accessTokenData?.user?.id)
+      throw new Error("Access token must have user id");
     const accessToken = generateJwtToken(
       accessTokenData,
       RSConfig.get("secret"),
@@ -28,7 +34,7 @@ module.exports = {
     return { accessToken, user, permissions };
   },
 
-  async loginUsingPassword(email, password) {
+  async loginUsingPassword(email, password, { clientIpAddress }) {
     if (!RSConfig.get("enablePasswordAuthentication"))
       throwError(
         "Password-based authentication has been disabled for this application."
@@ -38,16 +44,16 @@ module.exports = {
       email,
       password
     );
-    return this.loginSuccess(userId);
+    return this.loginSuccess(userId, clientIpAddress);
   },
 
-  async loginUsingOtp(service, serviceId, otp) {
+  async loginUsingOtp(service, serviceId, otp, { clientIpAddress }) {
     const userId = await this.authController.authenticateUsingOtp(
       service,
       serviceId,
       otp
     );
-    return this.loginSuccess(userId);
+    return this.loginSuccess(userId, clientIpAddress);
   },
 
   async loginUsingWallet(signature, signPayload) {
