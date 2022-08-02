@@ -1,7 +1,8 @@
 const defaultConfigs = {
   isDevEnvironment: process.env.ENV_TYPE === "development",
-  appSecret: null,
-  jwtDuration: 1200000,
+  secret: null,
+  jwtDuration: "12h",
+  jwtDurationLong: "30d", //ToDo... expire
   otpValidateDuration: 600,
   enablePasswordAuthentication: false, //enable authentication using password
   autoUserApprove: false, //auto approves user after they are added
@@ -13,7 +14,6 @@ class Config {
   }
 
   set(config = {}) {
-    //if (!config.appSecret) throw new Error("Must send appSecret.");
     Object.assign(this, config);
   }
 

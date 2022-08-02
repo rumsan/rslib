@@ -119,10 +119,7 @@ module.exports = class extends AbstractController {
   async getSignDataForWalletAuth(validDurationInSeconds) {
     validDurationInSeconds =
       validDurationInSeconds || RSConfig.get("otpValidateDuration") || 600;
-    return generateDataToSign(
-      RSConfig.get("appSecret"),
-      validDurationInSeconds
-    );
+    return generateDataToSign(RSConfig.get("secret"), validDurationInSeconds);
   }
 
   async authenticateUsingPassword(email, password) {

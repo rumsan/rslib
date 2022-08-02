@@ -21,7 +21,7 @@ module.exports = {
     const accessTokenData = this.setAccessTokenData({ user, permissions });
     const accessToken = generateJwtToken(
       accessTokenData,
-      RSConfig.get("appSecret"),
+      RSConfig.get("secret"),
       RSConfig.get("jwtDuration")
     );
     this.emit("login-success", accessToken, user, permissions);
