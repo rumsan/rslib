@@ -25,12 +25,15 @@ class UserController extends AbstractController {
     addRoles: (req) => this.addRoles(req.params.id, req.payload),
 
     login: (req) =>
-      this.loginUsingPassword(req.payload.email, req.payload.password),
+      this.loginUsingPassword(req.payload.email, req.payload.password, {
+        clientIpAddress: req.info.clientIpAddress,
+      }),
     loginUsingOtp: (req) =>
       this.loginUsingOtp(
         req.payload.service,
         req.payload.serviceId,
-        req.payload.otp
+        req.payload.otp,
+        { clientIpAddress: req.info.clientIpAddress }
       ),
   };
 
