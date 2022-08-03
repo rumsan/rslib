@@ -13,11 +13,9 @@ module.exports = (appSecret, routePermissions, request) => {
   if (!token) throw Error("No access token was sent");
 
   try {
-    const t = validateJwtToken(token, appSecret);
-    if (t.ip) {
-      if (request.info.clientIpAddress !== t.ip)
-        throw new Error("Invalid Token.");
-    }
+    const t = validateJwtToken(token, appSecret, {
+      ip: request.info.clientIpAddress,
+    });
     request.currentUser = t.user;
     request.currentUserId = t.userId;
     request.currentUserPermissions = t.permissions;
@@ -29,6 +27,7 @@ module.exports = (appSecret, routePermissions, request) => {
     const userPerms = t.permissions || [];
     return checkPermissions(userPerms, routePermissions);
   } catch (e) {
+    console.log("SecureRoute:", e.message);
     return false;
   }
 };

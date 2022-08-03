@@ -27,7 +27,8 @@ const CryptoUtils = {
     });
   },
 
-  validateJwtToken(token, secret, addTokenData = false) {
+  validateJwtToken(token, secret, options = {}) {
+    options.addTokenData = options.addTokenData || false;
     if (!secret)
       throw new Error("Must send 32 characters long appSecret config.");
     const JWT = loadNodeModule("jsonwebtoken");
@@ -37,9 +38,12 @@ const CryptoUtils = {
       let data = LZUTF8.decompress(tokenData.data, {
         inputEncoding: "StorageBinaryString",
       });
-
       data = JSON.parse(data);
-      if (addTokenData) data.tokenData = tokenData;
+      if (data.ip && options.ip !== data.ip)
+        throw new Error(
+          `Token sent from different IP address. [tokenIP:${data.ip}, clientIP:${options.ip}]`
+        );
+      if (options.addTokenData) data.tokenData = tokenData;
 
       return data;
     } catch (e) {
