@@ -35,6 +35,10 @@ class UserController extends AbstractController {
         req.payload.otp,
         { clientIpAddress: req.info.clientIpAddress }
       ),
+    loginUsingWallet: (req) =>
+      this.loginUsingWallet(req.payload.signature, req.payload.signPayload, {
+        clientIpAddress: req.info.clientIpAddress,
+      }),
   };
 
   /**
@@ -151,10 +155,10 @@ class UserController extends AbstractController {
   setAccessTokenData(data) {
     ERRNI();
   }
-  async loginUsingOtp(service, serviceId, otp) {
+  async loginUsingOtp(service, serviceId, otp, { clientIpAddress }) {
     ERRNI();
   }
-  async loginUsingWallet(signature, signPayload) {
+  async loginUsingWallet(signature, signPayload, { clientIpAddress }) {
     ERRNI();
   }
   //role.mixins

@@ -24,7 +24,13 @@ module.exports = class extends AbstractRouter {
     getSignDataForWalletAuth: {
       method: "GET",
       path: "/wallet",
-      description: "Get OTP for user",
+      description:
+        "Get encrypted data with ip and clientId (ws) for wallet to sign.",
+    },
+    authenticateUsingWallet: {
+      method: "POST",
+      path: "/wallet",
+      description: "send signature and signPayload for wallet to verify.",
     },
     manageUsingAction: {
       method: "POST",

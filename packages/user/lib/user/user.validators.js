@@ -42,6 +42,12 @@ module.exports = class extends AbstractValidator {
         otp: Joi.string().required(),
       }),
     },
+    loginUsingWallet: {
+      payload: Joi.object({
+        signature: Joi.string().required(),
+        signPayload: Joi.string().required(),
+      }),
+    },
     remove: {
       params: Joi.object({
         id: Joi.number(),

@@ -32,6 +32,11 @@ module.exports = class extends AbstractRouter {
       path: "/login/otp",
       description: "Login using OTP",
     },
+    loginUsingWallet: {
+      method: "POST",
+      path: "/login/wallet",
+      description: "Login using wallet with signed data.",
+    },
     getById: {
       method: "GET",
       path: "/{id}",

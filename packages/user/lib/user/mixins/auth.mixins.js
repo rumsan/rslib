@@ -1,7 +1,6 @@
 const {
   CryptoUtils: { generateJwtToken },
 } = require("@rumsan/core/utils");
-const { getAddressFromSignature } = require("@rumsan/core/utils/walletUtils");
 const { throwError, ERR } = require("../../../error");
 const { RSConfig } = require("@rumsan/core");
 
@@ -19,12 +18,14 @@ module.exports = {
       user.roles
     );
     let accessTokenData = this.setAccessTokenData({ user, permissions });
-    if (!accessTokenData.user)
-      throw new Error("Must send user to object to access token data.");
     accessTokenData.userId = user.id;
     accessTokenData.ip = clientIpAddress;
-    if (!accessTokenData?.user?.id)
+
+    if (!accessTokenData.user)
+      throw new Error("Must send user to object to access token data.");
+    if (!accessTokenData.userId)
       throw new Error("Access token must have user id");
+
     const accessToken = generateJwtToken(
       accessTokenData,
       RSConfig.get("secret"),
@@ -56,8 +57,25 @@ module.exports = {
     return this.loginSuccess(userId, clientIpAddress);
   },
 
-  async loginUsingWallet(signature, signPayload) {
-    const userId = await getAddressFromSignature(signature, signPayload);
-    return this.loginSuccess(userId);
+  async loginUsingWallet(signature, signPayload, { clientIpAddress }) {
+    const {
+      userId,
+      clientId: WSClientId,
+      address,
+    } = await this.authController.authenticateUsingWallet(
+      signature,
+      signPayload,
+      clientIpAddress
+    );
+    const { accessToken, user, permissions } = await this.loginSuccess(
+      userId,
+      clientIpAddress
+    );
+    this.emit("wallet-login-success", WSClientId, accessToken, {
+      user,
+      permissions,
+      address,
+    });
+    return this.loginSuccess(userId, clientIpAddress);
   },
 };

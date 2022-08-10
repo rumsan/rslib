@@ -7,7 +7,7 @@ const { AUTH_ACTIONS } = require("../../constants");
 const {
   CryptoUtils: { saltAndHash, hash },
   DateUtils: { getUnixTimestamp },
-  WalletUtils: { generateDataToSign, getAddressFromSignature },
+  WalletUtils: { generateDataToSign, validateSignature },
 } = require("@rumsan/core/utils");
 
 /**
@@ -33,7 +33,14 @@ module.exports = class extends AbstractController {
       this.remove(req.params.userId, req.payload.service),
     getOtpForService: (req) =>
       this.getOtpForService(req.payload.service, req.payload.serviceId),
-    getSignDataForWalletAuth: () => this.getSignDataForWalletAuth(),
+    getSignDataForWalletAuth: (req) =>
+      this.getSignDataForWalletAuth(req.query.cid, req.info.clientIpAddress),
+    authenticateUsingWallet: (req) =>
+      this.authenticateUsingWallet(
+        req.payload.signature,
+        req.payload.signPayload,
+        req.info.clientIpAddress
+      ),
   };
 
   manageUsingAction(userId, action, data) {
@@ -116,12 +123,6 @@ module.exports = class extends AbstractController {
     return true;
   }
 
-  async getSignDataForWalletAuth(validDurationInSeconds) {
-    validDurationInSeconds =
-      validDurationInSeconds || RSConfig.get("otpValidateDuration") || 600;
-    return generateDataToSign(RSConfig.get("secret"), validDurationInSeconds);
-  }
-
   async authenticateUsingPassword(email, password) {
     checkCondition(email, "Must send email.");
     checkCondition(password, "Must send password.");
@@ -168,20 +169,26 @@ module.exports = class extends AbstractController {
     return auth.userId;
   }
 
-  async authenticateUsingWallet(signature, signPayload) {
-    const walletAddress = getAddressFromSignature(
-      signature,
-      signPayload,
-      RSConfig.get("appSecret")
-    );
+  async getSignDataForWalletAuth(clientId, ip) {
+    return generateDataToSign(clientId, {
+      ip,
+      secret: RSConfig.get("secret"),
+      validDurationInSeconds: RSConfig.get("otpValidateDuration") || 600,
+    });
+  }
+
+  async authenticateUsingWallet(signature, signPayload, clientIpAddress) {
+    const { clientId, address } = validateSignature(signature, signPayload, {
+      ip: clientIpAddress,
+      secret: RSConfig.get("secret"),
+    });
 
     let auth = await this.tblAuths.findOne({
-      where: { service: "wallet", serviceId: walletAddress },
+      where: { service: "wallet", serviceId: address.toLowerCase() },
       attributes: { exclude: ["password"] },
     });
 
-    checkCondition(auth, "Wallet address does not exist.");
-
-    return auth.userId;
+    checkCondition(auth, `Wallet address [${address}] does not exist.`);
+    return { clientId, address, userId: auth.userId };
   }
 };

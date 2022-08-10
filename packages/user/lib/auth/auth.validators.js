@@ -43,5 +43,17 @@ module.exports = class extends AbstractValidator {
           .error(new Error("Invalid auth service.")),
       }),
     },
+    getSignDataForWalletAuth: {
+      query: Joi.object({
+        cid: Joi.string().required(),
+      }),
+    },
+
+    authenticateUsingWallet: {
+      payload: Joi.object({
+        signature: Joi.string().required(),
+        signPayload: Joi.string().required(),
+      }),
+    },
   };
 };

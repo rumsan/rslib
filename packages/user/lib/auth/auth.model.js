@@ -23,6 +23,10 @@ const schema = {
   serviceId: {
     type: DataTypes.STRING,
     allowNull: false,
+    set(v) {
+      if (!v) throw new Error("Must send serviceId");
+      return this.setDataValue("serviceId", v.toLowerCase());
+    },
   },
   details: {
     type: DataTypes.JSON,

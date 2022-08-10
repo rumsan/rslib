@@ -1,5 +1,4 @@
 const { loadNodeModule } = require("./core");
-const { randomNumber } = require("./mathUtils");
 const { encrypt, decrypt } = require("./cryptoUtils");
 const { getUnixTimestamp } = require("./dateUtils");
 
@@ -8,40 +7,45 @@ const loadEthers = () => {
 };
 
 module.exports = {
-  generateDataToSign(
-    data,
-    secret,
-    { validDurationInSeconds = 600, useRandom = false }
-  ) {
+  generateDataToSign(clientId, { secret, ip, validDurationInSeconds = 600 }) {
     if (!secret)
       throw new Error(
         "WalletUtils: Must send secret in to generate toSign payload"
       );
 
-    data = Object.assign(
-      {
-        random: randomNumber(6),
-        expireOn: getUnixTimestamp() + validDurationInSeconds,
-      },
-      data
-    );
+    let data = {
+      clientId,
+      expireOn: getUnixTimestamp() + validDurationInSeconds,
+      ip,
+    };
     return encrypt(JSON.stringify(data), secret);
   },
 
-  getAddressFromSignature(signature, signPayload, secret) {
+  validateSignature(signature, signPayload, { secret, ip }) {
+    if (!secret)
+      throw new Error(
+        "WalletUtils: Must send secret in to generate toSign payload"
+      );
+    if (!signature) throw Error("Must send 'signature'");
+    if (!signPayload) throw Error("Must send 'signPayload'");
+
     const ethers = loadEthers();
-    if (!signPayload) throw Error("Must send 'auth-signature'");
     try {
       const data = JSON.parse(decrypt(signPayload, secret));
+      if (data.ip && ip !== data.ip)
+        throw new Error(
+          `signature sent from different IP address. [signatureIP:${data.ip}, clientIP:${ip}]`
+        );
       if (getUnixTimestamp() > data.expireOn)
         throw Error("Signature has expired.");
       const address = ethers.utils.recoverAddress(
-        ethers.utils.hashMessage(signatureWithData),
+        ethers.utils.hashMessage(signPayload),
         signature
       );
-      return ethers.utils.getAddress(address);
+      data.address = ethers.utils.getAddress(address);
+      return data;
     } catch (e) {
-      throw new Error("Signature failed or expired. Try again.");
+      throw new Error(e.message);
     }
   },
 };
