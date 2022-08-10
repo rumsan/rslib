@@ -15,7 +15,8 @@ const {
 
 class UserController extends AbstractController {
   registrations = {
-    add: (req) => this.signupUsingEmail(req.payload),
+    signupUsingEmail: (req) => this.signupUsingEmail(req.payload),
+    signupUsingWallet: (req) => this.signupUsingWallet(req.payload),
     list: () => this.list(),
     remove: (req) => this.remove(req.params.id),
     getById: (req) => this.getById(req.params.id),
@@ -62,22 +63,24 @@ class UserController extends AbstractController {
     payload.roles = await this.roleController.filterValidRoleNames(
       payload.roles
     );
-    let newUser = await this.tblUsers.create(payload);
 
-    //TODO remove "email" hardcoded
-    let auth = await this.authController.add({
-      userId: newUser.id,
-      service: "email",
-      serviceId: payload.email,
-      password: payload.password,
-    });
-    this.emit(
-      EVENTS.USER_ADD_OTP,
-      auth.otp.code,
-      auth.serviceId,
-      newUser,
-      auth.service
-    );
+    //TODO: use storedproc or atomic tx here
+    let newUser = await this.tblUsers.create(payload);
+    payload.authPayload.userId = newUser.id;
+    let auth = await this.authController.add(payload.authPayload);
+
+    if (
+      payload.authPayload.service === "email" ||
+      payload.authPayload.service === "phone"
+    ) {
+      this.emit(
+        EVENTS.USER_ADD_OTP,
+        auth.otp.code,
+        auth.serviceId,
+        auth.service,
+        newUser
+      );
+    }
     this.emit(EVENTS.USER_ADD, newUser);
     return newUser;
   }
@@ -173,6 +176,9 @@ class UserController extends AbstractController {
     ERRNI();
   }
 
+  async signupUsingWallet(payload) {
+    ERRNI();
+  }
   //#endregion
 }
 

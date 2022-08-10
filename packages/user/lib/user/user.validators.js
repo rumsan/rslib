@@ -3,14 +3,14 @@ const AbstractValidator = require("@rumsan/core/abstract/validator");
 
 module.exports = class extends AbstractValidator {
   validators = {
-    add: {
+    signupUsingEmail: {
       payload: Joi.object({
         name: Joi.string()
           .required()
           .example("Mr. Ram Singh")
           .error(new Error("Invalid name.")),
         email: Joi.string()
-          .optional()
+          .required()
           .email()
           .example("test@test.com")
           .error(new Error("Invalid email.")),
@@ -18,6 +18,18 @@ module.exports = class extends AbstractValidator {
           .optional()
           .example("$xample")
           .error(new Error("Invalid password.")),
+      }),
+    },
+    signupUsingWallet: {
+      payload: Joi.object({
+        name: Joi.string()
+          .required()
+          .example("Mr. Ram Singh")
+          .error(new Error("Invalid name.")),
+        wallet: Joi.string()
+          .required()
+          .example("0x950aF1Af61dDC38B8Eb8A3fb720641F377bBb909")
+          .error(new Error("Invalid wallet address.")),
       }),
     },
     getById: {

@@ -43,6 +43,7 @@ const schema = {
       return JSON.parse(this.getDataValue("password"));
     },
     set(v) {
+      if (!v) return null;
       if (!(v.hasOwnProperty("salt") && v.hasOwnProperty("hash")))
         throw ERR.PASSWORD_FORMAT;
       return this.setDataValue("password", JSON.stringify(v));

@@ -10,11 +10,15 @@ module.exports = class extends AbstractRouter {
     super(options);
   }
   routes = {
-    add: {
+    signupUsingEmail: {
       method: "POST",
-      path: "",
-      description: "Add new user.",
-      permissions: [PERMISSIONS.USER_WRITE, PERMISSIONS.USER_MANAGE],
+      path: "/signup/email",
+      description: "Add new user using email address.",
+    },
+    signupUsingWallet: {
+      method: "POST",
+      path: "/signup/wallet",
+      description: "Add new user using wallet address.",
     },
     list: {
       method: "GET",

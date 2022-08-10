@@ -34,7 +34,7 @@ module.exports = {
       const data = JSON.parse(decrypt(signPayload, secret));
       if (data.ip && ip !== data.ip)
         throw new Error(
-          `signature sent from different IP address. [signatureIP:${data.ip}, clientIP:${ip}]`
+          `Signature sent from different IP address. [signatureIP:${data.ip}, clientIP:${ip}]`
         );
       if (getUnixTimestamp() > data.expireOn)
         throw Error("Signature has expired.");
