@@ -119,8 +119,8 @@ module.exports = class extends AbstractController {
     );
 
     auth.otp = this._createOtp(validDurationInSeconds);
+    await auth.save();
     this.emit("otp-created", auth.otp.code, service, serviceId, auth);
-    return true;
   }
 
   async authenticateUsingPassword(email, password) {
