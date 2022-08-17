@@ -16,8 +16,6 @@ class MailService extends EventEmitter {
     if (!options?.transporter)
       throw new Error("Must send nodemailer transporter.");
 
-    const nodemailer = loadNodeModule("nodemailer");
-    this.transporter = nodemailer.createTransport(options.transporter);
     this.options = options;
   }
 
@@ -46,6 +44,9 @@ class MailService extends EventEmitter {
       );
       return;
     }
+
+    const nodemailer = loadNodeModule("nodemailer");
+    this.transporter = nodemailer.createTransport(options.transporter);
 
     if (template) html = this.getHtmlBody(template, data);
 
