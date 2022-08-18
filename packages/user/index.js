@@ -22,8 +22,9 @@ module.exports = {
     const _userModel = new this.UserModel().init();
 
     _createAssociations({ _userModel, _authModel });
-    if (createAsociations)
+    if (createAsociations) {
       createAsociations({ _userModel, _authModel, _roleModel });
+    }
 
     return {
       AuthModel: _authModel,
@@ -34,6 +35,7 @@ module.exports = {
 };
 
 const _createAssociations = ({ _userModel, _authModel }) => {
+  console.log("_userModel,_authModel", _userModel, _authModel);
   _authModel.belongsTo(_userModel, {
     foreignKey: "userId",
     onDelete: "CASCADE",
