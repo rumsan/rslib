@@ -35,7 +35,6 @@ module.exports = {
 };
 
 const _createAssociations = ({ _userModel, _authModel }) => {
-  console.log("_userModel,_authModel", _userModel, _authModel);
   _authModel.belongsTo(_userModel, {
     foreignKey: "userId",
     onDelete: "CASCADE",
