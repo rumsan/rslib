@@ -23,7 +23,6 @@ module.exports = {
 
     _createAssociations({ _userModel, _authModel });
     if (createAsociations) {
-      console.log("createAsociations", createAsociations);
       createAsociations({ _userModel, _authModel, _roleModel });
     }
 
