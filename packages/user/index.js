@@ -22,8 +22,9 @@ module.exports = {
     const _userModel = new this.UserModel().init();
 
     _createAssociations({ _userModel, _authModel });
-    if (createAsociations)
+    if (createAsociations) {
       createAsociations({ _userModel, _authModel, _roleModel });
+    }
 
     return {
       AuthModel: _authModel,
