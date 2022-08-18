@@ -20,7 +20,7 @@ module.exports = class AbstractModel {
   }
 
   init() {
-    return this.db.define(this.tableName, this.schema, {
+    return this.db.define(this.tableName, this.getSchema(), {
       timestamps: true,
       freezeTableName: true,
       indexes: this.indexes || [],
@@ -28,6 +28,12 @@ module.exports = class AbstractModel {
   }
 
   getSchema() {
-    return this.schema;
+    return {
+      ...this.schema,
+      ...{
+        createdBy: { type: SequelizeDB.DataTypes.INTEGER },
+        updatedBy: { type: SequelizeDB.DataTypes.INTEGER },
+      },
+    };
   }
 };
