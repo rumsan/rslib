@@ -36,4 +36,10 @@ module.exports = {
       return [...res, obj[prefix + el]];
     }, []);
   },
+
+  removeProperties(obj, props) {
+    for (var i = 0; i < props.length; i++) {
+      delete obj[props[i]];
+    }
+  },
 };
