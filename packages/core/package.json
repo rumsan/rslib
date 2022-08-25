@@ -1,6 +1,6 @@
 {
   "name": "@rumsan/core",
-  "version": "1.0.208",
+  "version": "1.0.6",
   "description": "Rumsan core libraries",
   "main": "index.js",
   "author": "Rumsan Group",

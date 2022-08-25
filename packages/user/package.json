@@ -1,6 +1,6 @@
 {
   "name": "@rumsan/user",
-  "version": "1.0.207",
+  "version": "1.0.6",
   "description": "This manages users and access control for application",
   "main": "index.js",
   "author": "Rumsan",
@@ -11,7 +11,7 @@
     "test:watch": "cross-env NODE_ENV=development jest --runInBand --detectOpenHandles --watch ./tests"
   },
   "dependencies": {
-    "@rumsan/core": "*",
+    "@rumsan/core": "latest",
     "joi": "^17.6.0",
     "lzutf8": "^0.6.3",
     "pg": "^8.7.3",
