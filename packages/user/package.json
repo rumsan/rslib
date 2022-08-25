@@ -1,6 +1,6 @@
 {
   "name": "@rumsan/user",
-  "version": "1.0.6",
+  "version": "1.0.601",
   "description": "This manages users and access control for application",
   "main": "index.js",
   "author": "Rumsan",

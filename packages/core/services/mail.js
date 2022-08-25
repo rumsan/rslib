@@ -46,7 +46,7 @@ class MailService extends EventEmitter {
     }
 
     const nodemailer = loadNodeModule("nodemailer");
-    this.transporter = nodemailer.createTransport(options.transporter);
+    this.transporter = nodemailer.createTransport(this.options.transporter);
 
     if (template) html = this.getHtmlBody(template, data);
 

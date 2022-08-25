@@ -152,7 +152,7 @@ class UserController extends AbstractController {
   //#region Mixins function signature for auto-complete
 
   //auth.mixins
-  async loginUsingPassword(email, password) {
+  async loginUsingPassword(email, password, { clientIpAddress }) {
     ERRNI();
   }
   setAccessTokenData(data) {
