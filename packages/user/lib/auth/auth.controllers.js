@@ -132,7 +132,7 @@ module.exports = class extends AbstractController {
     });
 
     if (!auth) {
-      if (RSConfig.get("isDevEnvironment")) {
+      if (RSConfig.get("isDebug")) {
         throw throwError(ERR.AUTH_NOEXISTS);
       } else {
         throw throwError(ERR.LOGIN_INVALID);
@@ -144,7 +144,7 @@ module.exports = class extends AbstractController {
     );
 
     if (auth.password.hash !== hashedPwd.hash.toString("base64"))
-      if (RSConfig.get("isDevEnvironment")) {
+      if (RSConfig.get("isDebug")) {
         throw throwError(ERR.PWD_NOTMATCH);
       } else {
         throw throwError(ERR.LOGIN_INVALID);

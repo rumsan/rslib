@@ -1,5 +1,5 @@
 const defaultConfigs = {
-  isDevEnvironment: process.env.ENV_TYPE === "development",
+  isDebug: process.env.ENV_TYPE === "development",
   secret: null,
   jwtDuration: "12h",
   jwtDurationLong: "30d", //ToDo... expire

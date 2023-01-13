@@ -153,7 +153,7 @@ class Controller extends AbstractController {
     setting.value = { data: value };
     let retSett = await setting.save();
     this.emit("update", retSett);
-    return retSett;
+    return this.listPublic();
   }
 }
 

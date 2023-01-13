@@ -14,7 +14,7 @@ module.exports = class AbstractRouter {
 
     if (options.controller) this.setController(options.controller);
     if (options.validator) this.setValidator(options.validator);
-    //if (options.routes) this.addRoutes(options.routes);
+    if (options.routes) this.addRoutes(options.routes);
   }
 
   setController(controller) {
@@ -33,6 +33,11 @@ module.exports = class AbstractRouter {
 
   addRoutes(routes) {
     this.routes = { ...this.routes, ...routes };
+  }
+
+  addRouteWithController(route, controller) {
+    this._controllers.registerControllers(controller);
+    this.addRoutes(route);
   }
 
   getRoutes() {

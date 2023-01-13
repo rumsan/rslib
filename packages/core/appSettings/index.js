@@ -3,7 +3,6 @@ const Router = require("./routes");
 const Model = require("./model");
 
 class AppSettings {
-  //Router = Router;
   async init() {
     this.controller = Controller();
     await this.refresh();

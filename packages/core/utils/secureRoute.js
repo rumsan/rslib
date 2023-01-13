@@ -20,9 +20,8 @@ module.exports = (appSecret, routePermissions, request) => {
     request.currentUserId = t.userId;
     request.currentUserPermissions = t.permissions;
     if (request.payload) {
-      request.payload.currentUser = t.user;
-      request.payload.currentUserId = t.userId;
-      request.payload.currentUserPermissions = t.permissions;
+      request.payload.updatedBy = t.userId;
+      request.payload.createdBy = t.userId;
     }
     const userPerms = t.permissions || [];
     return checkPermissions(userPerms, routePermissions);
