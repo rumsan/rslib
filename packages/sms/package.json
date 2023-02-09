@@ -1,0 +1,13 @@
+{
+  "name": "@rumsan/sms",
+  "version": "0.9.100",
+  "description": "Rumsan SMS library",
+  "main": "index.js",
+  "author": "Rumsan Group",
+  "homepage": "https://github.com/rumsan/rslib",
+  "dependencies": {
+    "@rumsan/core": "^1.0.601",
+    "axios": "^1.3.2",
+    "nodemailer": "^6.9.1"
+  }
+}

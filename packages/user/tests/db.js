@@ -1,8 +1,7 @@
 const env = require("./env.js");
 
-const { Sequelize } = require("sequelize");
-
-const db = new Sequelize(env.database, env.username, env.password, {
+const SequelizeDB = require("@rumsan/core").SequelizeDB;
+SequelizeDB.init(env.database, env.username, env.password, {
   host: env.host,
   dialect: env.dialect,
   pool: {
@@ -13,5 +12,3 @@ const db = new Sequelize(env.database, env.username, env.password, {
   },
   logging: false,
 });
-
-module.exports = db;
