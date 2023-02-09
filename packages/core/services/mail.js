@@ -1,8 +1,8 @@
-const fs = require("fs");
-const path = require("path");
-var EventEmitter = require("events");
+const fs = require('fs');
+const path = require('path');
+var EventEmitter = require('events');
 
-const { loadNodeModule } = require("../utils/core");
+const { loadNodeModule } = require('../utils/core');
 class MailService extends EventEmitter {
   constructor(options) {
     super();
@@ -13,17 +13,16 @@ class MailService extends EventEmitter {
   }
 
   setConfig(options) {
-    if (!options?.transporter)
-      throw new Error("Must send nodemailer transporter.");
+    if (!options?.transporter) throw new Error('Must send nodemailer transporter.');
 
     this.options = options;
   }
 
   getHtmlBody(template, data) {
-    if (!template?.html) throw new Error("Template must have html.");
-    const handlebars = loadNodeModule("handlebars");
+    if (!template?.html) throw new Error('Template must have html.');
+    const handlebars = loadNodeModule('handlebars');
     const templatePath = path.resolve(template.html);
-    const text = fs.readFileSync(templatePath, { encoding: "utf-8" });
+    const text = fs.readFileSync(templatePath, { encoding: 'utf-8' });
     const hTemplate = handlebars.compile(text);
     return hTemplate(data);
   }
@@ -36,25 +35,20 @@ class MailService extends EventEmitter {
   }
 
   send({ to, subject, html, from, template, data }) {
-    if (!this.options)
-      throw new Error("Options not set. Please call setOptions once.");
+    if (!this.options) throw new Error('Options not set. Please call setOptions once.');
     if (this.options?.disableEmail) {
       console.log(
-        "Email service has been disabled from configuration. Please remove disableEmail config."
+        'Email service has been disabled from configuration. Please remove disableEmail config.'
       );
       return;
     }
 
-    const nodemailer = loadNodeModule("nodemailer");
+    const nodemailer = loadNodeModule('nodemailer');
     this.transporter = nodemailer.createTransport(this.options.transporter);
 
     if (template) html = this.getHtmlBody(template, data);
 
-    subject =
-      subject ||
-      template?.subject ||
-      this.options.defaultSubject ||
-      "[NO SUBJECT]";
+    subject = subject || template?.subject || this.options.defaultSubject || '[NO SUBJECT]';
     from = from || template?.from || this.options.from || null;
 
     return this.transporter
@@ -65,10 +59,14 @@ class MailService extends EventEmitter {
         html,
       })
       .then((response) => {
-        this.emit("mail-sent", response);
+        this.emit('mail-sent', response);
         this.transporter.close();
+        return response;
       })
-      .catch((err) => this.emit("mail-error", err.message));
+      .catch((err) => {
+        this.emit('mail-error', err.message);
+        throw err;
+      });
   }
 }
 

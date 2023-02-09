@@ -16,4 +16,10 @@ module.exports = {
       throw e;
     }
   },
+
+  rscheck(trueCondition, errorMessage) {
+    if (!trueCondition) {
+      throw new Error(errorMessage);
+    }
+  },
 };
