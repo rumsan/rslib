@@ -1,7 +1,7 @@
-const PinService = require("../PinService");
-const { GoogleSpreadsheet } = require("google-spreadsheet");
+const PinService = require('../PinService');
+const { GoogleSpreadsheet } = require('google-spreadsheet');
 
-const requiredOptions = ["sheetId", "sheetName", "googleCreds", "addressField"];
+const requiredOptions = ['sheetId', 'sheetName', 'googleCreds', 'addressField'];
 
 module.exports = class GSheetService extends PinService {
   constructor(options = {}) {
@@ -18,8 +18,8 @@ module.exports = class GSheetService extends PinService {
 
     const sheet = doc.sheetsByTitle[sheetName];
     const rows = await sheet.getRows();
-    const row = rows.find((d) => d.id === id);
-    if (!row) return { success: true, message: "id does not exists" };
+    const row = rows.find((d) => d.id.toUpperCase() === id.toUpperCase());
+    if (!row) return { success: true, message: 'id does not exists' };
     if (callback) callback(row);
     return { success: true, deliveryAddress: row[this.options.addressField], pin: row.pin, row };
   }
