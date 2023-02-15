@@ -1,6 +1,9 @@
 module.exports = {
   getUnixTimestamp(date) {
-    if (date) return parseInt((date.getTime() / 1000).toFixed(0));
-    else return parseInt((new Date().getTime() / 1000).toFixed(0));
+    if (date) return Math.floor(date.getTime() / 1000);
+    else return Math.floor(new Date().getTime() / 1000);
+  },
+  now() {
+    return Math.floor(Date.now() / 1000);
   },
 };

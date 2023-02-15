@@ -1,9 +1,9 @@
-const PinService = require("../PinService");
-const { getValueByPath } = require("@rumsan/core/utils/objectUtils");
+const PinService = require('../PinService');
+const { getValueByPath } = require('@rumsan/core/utils/objectUtils');
 
-const requiredOptions = ["url", "pinFieldMap", "addressFieldMap"];
+const requiredOptions = ['url', 'pinFieldMap', 'addressFieldMap'];
 
-module.exports = class GSheetService extends PinService {
+module.exports = class WebhookService extends PinService {
   constructor(options = {}) {
     super(options, requiredOptions);
   }
@@ -18,7 +18,7 @@ module.exports = class GSheetService extends PinService {
       .then((res) => {
         const pin = getValueByPath(res.data, pinFieldMap);
         const deliveryAddress = getValueByPath(res.data, addressFieldMap);
-        if (!pin) return { success: false, message: "pin not found" };
+        if (!pin) return { success: false, message: 'pin not found' };
         return { success: true, pin, data: res.data };
       })
       .catch((error) => {

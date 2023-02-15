@@ -1,6 +1,6 @@
 {
   "name": "@rumsan/pin",
-  "version": "0.9.102",
+  "version": "0.9.103",
   "description": "Rumsan PIN code library",
   "main": "index.js",
   "author": "Rumsan Group",
