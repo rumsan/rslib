@@ -6,6 +6,7 @@ const requiredOptions = ['sheetId', 'sheetName', 'googleCreds', 'addressField'];
 module.exports = class GSheetService extends PinService {
   constructor(options = {}) {
     super(options, requiredOptions);
+    this.options.pinField = this.options.pinField || 'pin';
   }
 
   async getPin(id, callback) {
@@ -18,9 +19,14 @@ module.exports = class GSheetService extends PinService {
 
     const sheet = doc.sheetsByTitle[sheetName];
     const rows = await sheet.getRows();
-    const row = rows.find((d) => d.id.toUpperCase() === id.toUpperCase());
+    const row = rows.find((d) => d[this.options.addressField].toUpperCase() === id.toUpperCase());
     if (!row) return { success: true, message: 'id does not exists' };
     if (callback) callback(row);
-    return { success: true, deliveryAddress: row[this.options.addressField], pin: row.pin, row };
+    return {
+      success: true,
+      deliveryAddress: row[this.options.addressField],
+      pin: row[this.options.pinField],
+      row,
+    };
   }
 };
