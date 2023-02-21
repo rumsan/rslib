@@ -6,6 +6,7 @@ const requiredOptions = ['sheetId', 'sheetName', 'googleCreds', 'addressField'];
 module.exports = class GSheetService extends PinService {
   constructor(options = {}) {
     super(options, requiredOptions);
+    this.options.idField = this.options.idField || 'id';
     this.options.pinField = this.options.pinField || 'pin';
   }
 
@@ -19,7 +20,7 @@ module.exports = class GSheetService extends PinService {
 
     const sheet = doc.sheetsByTitle[sheetName];
     const rows = await sheet.getRows();
-    const row = rows.find((d) => d[this.options.addressField].toUpperCase() === id.toUpperCase());
+    const row = rows.find((d) => d[this.options.idField].toUpperCase() === id.toUpperCase());
     if (!row) return { success: true, message: 'id does not exists' };
     if (callback) callback(row);
     return {
